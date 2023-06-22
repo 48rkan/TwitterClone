@@ -32,6 +32,8 @@ class LoginController: UIViewController {
                              titleColor: .twitterBlue, size: 20,
                              cornerRadius: 5)
         b.addTarget(self, action: #selector(tappedLogInButton), for: .touchUpInside)
+        b.isEnabled = false
+
         return b
     }()
     
@@ -43,9 +45,11 @@ class LoginController: UIViewController {
     }()
     
     //MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        configDelegates()
     }
     
     //MARK: - Actions
@@ -64,10 +68,8 @@ class LoginController: UIViewController {
                 self.showMessage(withTitle: error?.localizedDescription ?? "")
                 return
             }
-            
 
             guard let window = UIApplication.shared.connectedScenes.compactMap { ($0 as? UIWindowScene)?.keyWindow }.last else { return }
-            
             guard let tabBar = window.rootViewController as? MainTabBarController else { return }
             
             tabBar.checkAuthenticateUser()
@@ -103,5 +105,36 @@ extension LoginController {
         view.addSubview(dontHaveAccountButton)
         dontHaveAccountButton.anchor(left: view.leftAnchor,bottom: view.safeAreaLayoutGuide.bottomAnchor,right: view.rightAnchor,paddingLeft: 4,paddingBottom: 4,paddingRight: 4)
         
+    }
+    
+    func configDelegates() {
+        emailContainerView.delegate    = self
+        passwordContainerView.delegate = self
+    }
+}
+
+extension LoginController: CustomContainerViewDelegate {
+    func didChangeTextField(sender: UITextField, text: String) {
+    
+        switch sender {
+        case emailContainerView.textField:
+            viewModel.email = text
+        case passwordContainerView.textField:
+            viewModel.password = text
+        case _:
+            break
+        }
+        
+        logInButton.backgroundColor = viewModel.configBackgroundColor
+        
+        updateForm()
+    }
+    
+    func updateForm() {
+        if viewModel.formIsValid {
+            logInButton.isEnabled = true
+        } else {
+            logInButton.isEnabled = false
+        }
     }
 }

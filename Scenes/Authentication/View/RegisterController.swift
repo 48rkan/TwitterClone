@@ -38,6 +38,7 @@ class RegisterController: UIViewController {
                              titleColor: .twitterBlue, size: 20,
                              cornerRadius: 5)
         b.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
+        b.isEnabled = false
         return b
     }()
     
@@ -52,6 +53,7 @@ class RegisterController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        configDelegates()
     }
     
     //MARK: - Actions
@@ -67,9 +69,9 @@ class RegisterController: UIViewController {
         guard let password = passwordContainerView.textField.text else { return }
         guard let fullName = fullNameContainerView.textField.text else { return }
         guard let userName = userNameContainerView.textField.text else { return }
-        guard let image    = viewModel.selectedImage                   else { return }
+        guard let image    = viewModel.selectedImage              else { return }
         
-        print("tappedSignUpButton")
+        self.showLoader(true)
         viewModel.registerUser(credential: AuthCredential(email: email,
                                                           password: password,
                                                           fullname: fullName,
@@ -77,8 +79,13 @@ class RegisterController: UIViewController {
                                                           profileImage: image)) { error in
             
             self.showMessage(withTitle: error?.localizedDescription ?? "Success")
+            self.showLoader(false)
+            if error != nil { return }
+            
+            DispatchQueue.main.asyncAfter(wallDeadline: .now() + 1) {
+                self.navigationController?.popViewController(animated: true)
+            }
         }
-
     }
     
     @objc func tappedGoLoginScene() {
@@ -117,6 +124,13 @@ extension RegisterController {
         view.addSubview(alreadyHaveAccountButton)
         alreadyHaveAccountButton.anchor(left: view.leftAnchor,bottom: view.safeAreaLayoutGuide.bottomAnchor,right: view.rightAnchor,paddingTop: 4,paddingBottom: 4,paddingRight: 4)
     }
+    
+    func configDelegates() {
+        emailContainerView.delegate    = self
+        passwordContainerView.delegate = self
+        userNameContainerView.delegate = self
+        fullNameContainerView.delegate = self
+    }
 }
 
 //MARK: - UIImagePickerControllerDelegate & UINavigationControllerDelegate
@@ -132,5 +146,34 @@ extension RegisterController: UIImagePickerControllerDelegate & UINavigationCont
         plusButton.layer.borderWidth = 2
         
         dismiss(animated: true)
+    }
+}
+
+extension RegisterController: CustomContainerViewDelegate {
+    func didChangeTextField(sender: UITextField, text: String) {
+        
+        switch sender {
+        case emailContainerView.textField:
+            viewModel.email = text
+        case passwordContainerView.textField:
+            viewModel.password = text
+        case userNameContainerView.textField:
+            viewModel.userName = text
+        case fullNameContainerView.textField:
+            viewModel.fullName = text
+        case _ :
+            break
+        }
+        
+        signUpButton.backgroundColor = viewModel.configBackgroundColor
+        updateForm()
+    }
+    
+    func updateForm() {
+        if viewModel.formIsValid {
+            signUpButton.isEnabled = true
+        } else {
+            signUpButton.isEnabled = false
+        }
     }
 }

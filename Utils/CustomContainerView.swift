@@ -7,11 +7,22 @@
 
 import UIKit
 
+protocol CustomContainerViewDelegate: AnyObject {
+    func didChangeTextField(sender: UITextField, text: String)
+}
+
 class CustomContainerView: UIView {
     
     //MARK: - Properties
-    private let imageView = UIImageView()
-    let textField = UITextField()
+    
+    weak var delegate: CustomContainerViewDelegate?
+    
+    private lazy var imageView = UIImageView()
+    let textField: UITextField =  {
+        let tf = UITextField()
+        tf.addTarget(self, action: #selector(changedTextField), for: .editingChanged)
+        return tf
+    }()
     
     //MARK: - Lifecycle
     init(image: UIImage,placeholder: String,secure: Bool = false) {
@@ -21,7 +32,11 @@ class CustomContainerView: UIView {
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
     
-    func configureUI(image: UIImage,placeholder: String,secure: Bool) {
+    @objc func changedTextField(sender: UITextField) {
+        delegate?.didChangeTextField(sender: sender, text: sender.text ?? "")
+    }
+    
+    private func configureUI(image: UIImage,placeholder: String,secure: Bool) {
         addSubview(imageView)
         imageView.centerY(inView: self ,leftAnchor: leftAnchor,paddingLeft: 4)
         imageView.setDimensions(height: 24, width: 24)

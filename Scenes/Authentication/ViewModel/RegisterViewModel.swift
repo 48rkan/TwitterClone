@@ -7,7 +7,21 @@
 import UIKit
 
 class RegisterViewModel {
+    var email: String?
+    var password: String?
+    var fullName: String?
+    var userName: String?
+    
     var selectedImage: UIImage?
+    
+    var formIsValid: Bool {
+        email?.isEmpty    == false &&
+        password?.isEmpty == false &&
+        fullName?.isEmpty == false &&
+        userName?.isEmpty == false
+    }
+    
+    var configBackgroundColor: UIColor { formIsValid ? .brown : .white}
 
     func registerUser(credential: AuthCredential, completion: @escaping (Error?) -> ()) {
         
