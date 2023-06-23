@@ -25,12 +25,15 @@ class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         checkAuthenticateUser()
-        self.asads()
+//        self.asads()
     }
     
     //MARK: - Actions
     @objc private func tappedActionButton() {
-        print("tapped")
+        let controller = UploadController()
+        let nav = UINavigationController(rootViewController: controller)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
     }
 }
 
@@ -64,6 +67,7 @@ extension MainTabBarController {
     }
     
     private func configureTabBar() {
+
         let feed = templateNavigationController(controller: FeedController(),
                                                 selectedImage: Assets.home_unselected.image(),
                                                 unselectedImage: Assets.home_unselected.image())

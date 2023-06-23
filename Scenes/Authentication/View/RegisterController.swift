@@ -82,19 +82,17 @@ class RegisterController: UIViewController {
             self.showLoader(false)
             if error != nil { return }
             
-            DispatchQueue.main.asyncAfter(wallDeadline: .now() + 1) {
-                self.navigationController?.popViewController(animated: true)
+            DispatchQueue.main.asyncAfter(wallDeadline: .now() + 1) { self.navigationController?.popViewController(animated: true)
             }
         }
     }
     
-    @objc func tappedGoLoginScene() {
-        navigationController?.popViewController(animated: true)
-    }
+    @objc func tappedGoLoginScene() { navigationController?.popViewController(animated: true) }
 }
 
 //MARK: - Helpers
 extension RegisterController {
+    
     func configureUI() {
         view.backgroundColor = .twitterBlue
         

@@ -39,7 +39,6 @@ struct AuthService {
                 
                 let data: [String:Any] = [
                     "email"      : credential.email,
-                    "password"   : credential.password,
                     "fullname"   : credential.fullname,
                     "username"   : credential.username.lowercased(),
                     "profilimage": imageUrl,
