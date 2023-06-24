@@ -6,6 +6,7 @@
 
 import UIKit
 
+
 class UploadController: UIViewController {
     
     //MARK: - Properties
@@ -18,19 +19,18 @@ class UploadController: UIViewController {
         return iv
     }()
     
-    private let textView: UITextView = {
-        let tv = UITextView()
-        tv.backgroundColor = .red
-        tv.text = "asdda"
+    private lazy var textView: CustomTextView = {
+        let tv = CustomTextView(text: "Enter caption")
+        tv.delegate_ = self
         return tv
     }()
-    
+        
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         configNavigationBar()
-    
+
     }
     
     //MARK: - Actions
@@ -39,6 +39,11 @@ class UploadController: UIViewController {
     }
     
     @objc private func tappedTweetButton() {
+        TweetService.uploadTweet(text: textView.text, user: viewModel.user) { error in
+            print(error)
+        }
+        
+        dismiss(animated: true)
         print("OK")
     }
 }
@@ -47,7 +52,7 @@ class UploadController: UIViewController {
 extension UploadController {
     
     private func configureUI() {
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .white
         
         view.addSubview(profileImageView)
         profileImageView.anchor(top: view.safeAreaLayoutGuide.topAnchor,
@@ -75,6 +80,18 @@ extension UploadController {
         b.addTarget(self, action: #selector(tappedTweetButton), for: .touchUpInside)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: b)
+        navigationItem.rightBarButtonItem?.isEnabled = false
     }
     
+}
+
+//MARK: - CustomTextViewDelegate
+extension UploadController: CustomTextViewDelegate {
+    func doEnabled() {
+        if !textView.text.isEmpty {
+            navigationItem.rightBarButtonItem?.isEnabled = true
+        } else {
+            navigationItem.rightBarButtonItem?.isEnabled = false
+        }
+    }
 }
