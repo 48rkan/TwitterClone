@@ -24,7 +24,22 @@ class UploadController: UIViewController {
         tv.delegate_ = self
         return tv
     }()
+    
+    private lazy var tweetButton: CustomButton = {
+        let b = CustomButton(backgroundColor: .lightGray,
+                             title: "Tweet", titleColor: .white,
+                             size : 16, cornerRadius: 16)
+        b.setDimensions(height: 32, width: 64)
+        b.titleLabel?.textAlignment = .center
+//        b.isEnabled = false
+        b.addTarget(self,
+                    action: #selector(tappedTweetButton),
+                    for: .touchUpInside)
         
+        return b
+    }()
+    
+
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,26 +87,20 @@ extension UploadController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(tappedCancel))
         
-        let b = CustomButton(backgroundColor: .twitterBlue,
-                             title: "Tweet", titleColor: .white,
-                             size: 16,cornerRadius: 16)
-        b.setDimensions(height: 32, width: 64)
-        b.titleLabel?.textAlignment = .center
-        b.addTarget(self, action: #selector(tappedTweetButton), for: .touchUpInside)
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: b)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: tweetButton)
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
-    
 }
 
 //MARK: - CustomTextViewDelegate
 extension UploadController: CustomTextViewDelegate {
     func doEnabled() {
         if !textView.text.isEmpty {
-            navigationItem.rightBarButtonItem?.isEnabled = true
+            tweetButton.isEnabled       = true
+            tweetButton.backgroundColor = .twitterBlue
         } else {
-            navigationItem.rightBarButtonItem?.isEnabled = false
+            tweetButton.isEnabled       = false
+            tweetButton.backgroundColor = .lightGray
         }
     }
 }

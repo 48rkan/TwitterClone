@@ -17,7 +17,6 @@ struct TweetService {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        
         let data : [String:Any] = [
             "text"    : text,
             "likes"   : 0,
@@ -30,13 +29,15 @@ struct TweetService {
             "liked"              : false
         ]
         
-        Firestore.firestore().collection("tweets").document(uid).setData(data,completion: completion)
+        Firestore.firestore().collection("tweets").addDocument(data: data)
         
 //        Firestore.firestore().collection("tweets").addDocument(data: data) { error in
 //            completion(error)
 //        }
         
     }
+    
+
     
     //    static func fetchPosts(completion: @escaping ([Post])->()) {
     //        // descending - azalan sira
