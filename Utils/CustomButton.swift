@@ -15,6 +15,7 @@ class CustomButton: UIButton {
          title       : String,
          titleColor  : UIColor,
          font        : String? = nil,
+         systemFont  : UIFont?  = nil,
          size        : CGFloat,
          cornerRadius: CGFloat = 0) {
         super.init(frame: .zero)
@@ -25,9 +26,9 @@ class CustomButton: UIButton {
         self.clipsToBounds      = true
         
         if let font = font {
-            self.titleLabel?.font   = UIFont(name: font, size: size)
+            self.titleLabel?.font = UIFont(name: font, size: size)
         } else {
-            self.titleLabel?.font = UIFont.boldSystemFont(ofSize: size)
+            self.titleLabel?.font = systemFont
         }
         
         if let hexCode = hexCode {
@@ -39,4 +40,3 @@ class CustomButton: UIButton {
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
 }
-

@@ -7,7 +7,7 @@
 import UIKit
 
 protocol CustomTextViewDelegate: AnyObject {
-    func doEnabled()
+    func textView(_ textView: CustomTextView)
 }
 
 class CustomTextView: UITextView {
@@ -47,7 +47,6 @@ class CustomTextView: UITextView {
     
     @objc func handleTextView() {
         placeholder.isHidden =  !self.text.isEmpty
-        delegate_?.doEnabled()
-        
+        delegate_?.textView(self)
     }
 }

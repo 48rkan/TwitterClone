@@ -65,11 +65,11 @@ class RegisterController: UIViewController {
     }
     
     @objc func tappedSignUpButton() {
-        guard let email    = emailContainerView.textField.text    else { return }
-        guard let password = passwordContainerView.textField.text else { return }
-        guard let fullName = fullNameContainerView.textField.text else { return }
-        guard let userName = userNameContainerView.textField.text else { return }
-        guard let image    = viewModel.selectedImage              else { return }
+        guard let email    = emailContainerView.textField.text                  else { return }
+        guard let password = passwordContainerView.textField.text               else { return }
+        guard let fullName = fullNameContainerView.textField.text               else { return }
+        guard let userName = userNameContainerView.textField.text?.lowercased() else { return }
+        guard let image    = viewModel.selectedImage                            else { return }
         
         self.showLoader(true)
         viewModel.registerUser(credential: AuthCredential(email: email,

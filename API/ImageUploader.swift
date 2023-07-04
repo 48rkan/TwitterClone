@@ -1,7 +1,5 @@
-//
 //  ImageUploader.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 22.06.23.
 
 import Foundation
@@ -33,5 +31,4 @@ struct ImageUploader {
             }
         }
     }
-       
 }

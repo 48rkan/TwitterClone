@@ -9,11 +9,11 @@
 import UIKit
 
 class ConversationsController: UIViewController {
+    
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()        
-
+        configureUI()
     }
 }
 

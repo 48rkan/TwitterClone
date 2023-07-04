@@ -7,11 +7,15 @@ import UIKit
 
 class CustomLabel: UILabel {
     
-    init(text     : String,
-         textColor: UIColor? = .white,
-         hexCode  : String?  = nil,
-         size     : CGFloat,
-         font     : String   = "Helvetica Neue") {
+    init(text         : String,
+         textColor    : UIColor? = .white,
+         hexCode      : String?  = nil,
+         size         : CGFloat? = nil,
+         font         : String   = "Helvetica Neue",
+         systemfont   : UIFont?  = nil,
+         alignment    : NSTextAlignment = .center,
+         numberOfLines: Int = 1)
+     {
         super.init(frame: .zero)
         
         if let hexCode = hexCode {
@@ -20,10 +24,17 @@ class CustomLabel: UILabel {
             self.textColor = textColor
         }
         
+        if let systemfont = systemfont {
+            self.font = systemfont
+        } else {
+            self.font = UIFont(name: font, size: size ?? CGFloat(1))
+
+        }
+        
         self.text = text
-        self.font = UIFont(name: font, size: size)
-        textAlignment = .center
-        numberOfLines = 0
+        
+        textAlignment = alignment
+        self.numberOfLines = numberOfLines
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
 }

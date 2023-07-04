@@ -161,6 +161,12 @@ extension UIView {
         anchor(top: view.topAnchor, left: view.leftAnchor,
                bottom: view.bottomAnchor, right: view.rightAnchor)
     }
+    
+    func addConstraintsToFillView(_ view: UIView) {
+        translatesAutoresizingMaskIntoConstraints = false
+        anchor(top: view.topAnchor, left: view.leftAnchor,
+               bottom: view.bottomAnchor, right: view.rightAnchor)
+    }
 }
 
 // MARK: - UIColor
@@ -172,7 +178,6 @@ extension UIColor {
     
     static let twitterBlue = UIColor.rgb(red: 29, green: 161, blue: 242)
 }
-
 
 // xususi reng vermek
 
@@ -210,26 +215,26 @@ extension UIColor {
 // labelin hecmine gore hundurluk vermek
 
 extension CVarArg {
-    
     func dynamicHeightCalculator(text: String,width: CGFloat) -> CGFloat {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.text = text
-        label.lineBreakMode = .byWordWrapping
-        label.setWidth(width)
+        let l = UILabel()
+        l.numberOfLines = 0
+        l.text = text
+        l.lineBreakMode = .byWordWrapping
+        l.setWidth(width)
         
-        return label.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        return l.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        
+        return CGFloat(width)
     }
     
     func dynamicWidthCalculator(text: String,height: CGFloat) -> CGFloat {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.text = text
-        label.lineBreakMode = .byWordWrapping
-        label.setHeight(height)
-//        label.setWidth(width)
+        let l = UILabel()
+        l.numberOfLines = 0
+        l.text = text
+        l.lineBreakMode = .byWordWrapping
+        l.setHeight(height)
 
-        return label.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width
+        return l.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width
     }
 }
 

@@ -1,32 +1,12 @@
 //
-//  Button+ext.swift
+//  UILabel+ext.swift
 //  TwitterClone
-//  Created by Erkan Emir on 21.06.23.
+//  Created by Erkan Emir on 01.07.23.
 
 import UIKit
 
-extension UIButton  {
-    func setButtonConfiguration(firstText: String,
-                                firstTextColor: UIColor = .white,
-                                secondText: String,
-                                secondTextColor: UIColor = .white) {
-        
-        let firstTitle = NSMutableAttributedString(string: firstText,
-                                                   attributes: [
-                                                    .font: UIFont.systemFont(ofSize: 16),
-                                                    .foregroundColor: firstTextColor
-                                                   ])
-        
-        let secondTitle = NSMutableAttributedString(string: secondText,
-                                                    attributes: [
-                                                     .font: UIFont.boldSystemFont(ofSize: 16),
-                                                     .foregroundColor: secondTextColor
-                                                    ])
-        firstTitle.append(secondTitle)
-        self.setAttributedTitle(firstTitle, for: .normal)
-    }
-    
-    func setDetailedButtonConfiguration(text1       : String,
+extension UILabel {
+    func setDetailedLabelConfiguration  (text1       : String,
                                         text1Font   : UIFont,
                                         text1Color  : UIColor,
                                         text2       : String,
@@ -55,7 +35,6 @@ extension UIButton  {
         
         firstTitle.append(secondTitle)
         firstTitle.append(thirdTitle)
-        self.setAttributedTitle(firstTitle, for: .normal)
+        self.attributedText = firstTitle
     }
 }
-

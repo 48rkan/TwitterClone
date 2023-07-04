@@ -1,15 +1,10 @@
-//
 //  UserService.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 23.06.23.
 
 import FirebaseAuth
 import FirebaseFirestore
 import UIKit
-
-//document snapshot -- anlik belgeler
-// QueryDocumentSnapshot - anlik belge sorgusu
 
 class AccountService {
     static let instance = AccountService()
@@ -19,12 +14,12 @@ class AccountService {
     func fetchUser() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        Firestore.firestore().collection("user").document(uid)
+        Firestore.firestore().collection("user")
+            .document(uid)
             .getDocument { documentSnapshot, error in
             
             guard let dictionary = documentSnapshot?.data() else { return }
             self.currentUser = User(dictionary: dictionary)
-//            completion(User(dictionary: dictionary))
         }
     }
 }

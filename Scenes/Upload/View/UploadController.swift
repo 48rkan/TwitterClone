@@ -6,10 +6,15 @@
 
 import UIKit
 
+protocol UploadControllerDelegate: AnyObject {
+    func controller(_ postUpdateDidComplete: UIViewController)
+}
 
 class UploadController: UIViewController {
     
     //MARK: - Properties
+    weak var delegate: UploadControllerDelegate?
+    
     var viewModel = UploadViewModel()
     
     private let profileImageView: UIImageView = {
@@ -28,10 +33,9 @@ class UploadController: UIViewController {
     private lazy var tweetButton: CustomButton = {
         let b = CustomButton(backgroundColor: .lightGray,
                              title: "Tweet", titleColor: .white,
-                             size : 16, cornerRadius: 16)
+                             size : 16     , cornerRadius: 16)
         b.setDimensions(height: 32, width: 64)
         b.titleLabel?.textAlignment = .center
-//        b.isEnabled = false
         b.addTarget(self,
                     action: #selector(tappedTweetButton),
                     for: .touchUpInside)
@@ -45,6 +49,7 @@ class UploadController: UIViewController {
         super.viewDidLoad()
         configureUI()
         configNavigationBar()
+        print(AccountService.instance.currentUser?.fullname)
 
     }
     
@@ -54,11 +59,13 @@ class UploadController: UIViewController {
     }
     
     @objc private func tappedTweetButton() {
+
         TweetService.uploadTweet(text: textView.text, user: viewModel.user) { error in
             print(error)
         }
         
         dismiss(animated: true)
+        delegate?.controller(self)
         print("OK")
     }
 }
@@ -94,7 +101,7 @@ extension UploadController {
 
 //MARK: - CustomTextViewDelegate
 extension UploadController: CustomTextViewDelegate {
-    func doEnabled() {
+    func textView(_ textView: CustomTextView) {
         if !textView.text.isEmpty {
             tweetButton.isEnabled       = true
             tweetButton.backgroundColor = .twitterBlue

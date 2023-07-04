@@ -39,7 +39,7 @@ class LoginController: UIViewController {
     
     private lazy var dontHaveAccountButton: UIButton = {
         let b = UIButton()
-        b.setButtonConfiguration(firstText: "Don't have an account?", secondText: " Sign up")
+        b.setButtonConfiguration(firstText: "Don't have an account?",firstTextColor: .white, secondText: " Sign up",secondTextColor: .white)
         b.addTarget(self, action: #selector(tappedGoRegister), for: .touchUpInside)
         return b
     }()
@@ -101,10 +101,8 @@ extension LoginController {
         stack.distribution = .fillEqually
         stack.spacing      = 16
         
-        
         view.addSubview(dontHaveAccountButton)
         dontHaveAccountButton.anchor(left: view.leftAnchor,bottom: view.safeAreaLayoutGuide.bottomAnchor,right: view.rightAnchor,paddingLeft: 4,paddingBottom: 4,paddingRight: 4)
-        
     }
     
     func configDelegates() {
@@ -114,8 +112,8 @@ extension LoginController {
 }
 
 extension LoginController: CustomContainerViewDelegate {
-    func didChangeTextField(sender: UITextField, text: String) {
     
+    func didChangeTextField(sender: UITextField, text: String) {
         switch sender {
         case emailContainerView.textField:
             viewModel.email = text
@@ -126,7 +124,6 @@ extension LoginController: CustomContainerViewDelegate {
         }
         
         logInButton.backgroundColor = viewModel.configBackgroundColor
-        
         updateForm()
     }
     

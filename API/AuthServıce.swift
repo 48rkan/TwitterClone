@@ -1,7 +1,5 @@
-//
-//  AuthServıce.swift
+//  AuthService.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 22.06.23.
 
 import UIKit
@@ -34,7 +32,7 @@ struct AuthService {
             
             Auth.auth().createUser(withEmail: credential.email, password: credential.password) { result, error in
                 if error != nil { completion(error) }
-
+                
                 guard let uid = result?.user.uid else { return }
                 
                 let data: [String:Any] = [

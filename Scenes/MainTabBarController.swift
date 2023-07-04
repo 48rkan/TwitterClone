@@ -31,6 +31,7 @@ class MainTabBarController: UITabBarController {
     //MARK: - Actions
     @objc private func tappedActionButton() {
         let controller = UploadController()
+        controller.delegate = self
         let nav = UINavigationController(rootViewController: controller)
         nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true)
@@ -67,10 +68,10 @@ extension MainTabBarController {
     }
     
     private func configureTabBar() {
-
-        let feed = templateNavigationController(controller: FeedController(),
-                                                selectedImage: Assets.home_unselected.image(),
-                                                unselectedImage: Assets.home_unselected.image())
+        showLoader(true)
+        let container = ContainerViewController()
+        container.tabBarItem.selectedImage = Assets.home_unselected.image()
+        container.tabBarItem.image         = Assets.home_unselected.image()
         
         let explore = templateNavigationController(controller: ExploreController(),
                                                 selectedImage: Assets.search_unselected.image(),
@@ -84,7 +85,7 @@ extension MainTabBarController {
                                                 selectedImage: Assets.mail.image(),
                                                 unselectedImage: Assets.mail.image())
         
-        viewControllers = [ feed , explore  , notifications  , conversations ]
+        viewControllers = [ container , explore  , notifications  , conversations ]
     }
     
     func templateNavigationController(controller: UIViewController,
@@ -96,5 +97,16 @@ extension MainTabBarController {
         nav.navigationBar.tintColor = .white
         return nav
 
+    }
+}
+
+//MARK: - UploadControllerDelegate
+extension MainTabBarController: UploadControllerDelegate {
+    func controller(_ postUpdateDidComplete: UIViewController) {
+        guard let nav  = self.viewControllers?[0] as? UINavigationController else { return }
+        guard let feed = nav.viewControllers[0]   as? FeedController         else { return }
+        
+        feed.viewModel.fetchAllTweets()
+        selectedIndex = 0
     }
 }
