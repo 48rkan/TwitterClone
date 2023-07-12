@@ -42,7 +42,6 @@ class MenuViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         
-        
         viewModel.callBack = {
             self.configure()
         }

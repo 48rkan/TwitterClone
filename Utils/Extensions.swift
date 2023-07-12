@@ -224,7 +224,6 @@ extension CVarArg {
         
         return l.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         
-        return CGFloat(width)
     }
     
     func dynamicWidthCalculator(text: String,height: CGFloat) -> CGFloat {

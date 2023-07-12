@@ -1,9 +1,6 @@
-//
 //  FilterCellViewModel.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 30.06.23.
-//
 
 import Foundation
 

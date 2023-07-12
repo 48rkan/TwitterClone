@@ -26,8 +26,6 @@ class FeedController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        view.backgroundColor = .white
-        navigationController?.navigationBar.backgroundColor = .white
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -46,6 +44,7 @@ class FeedController: UIViewController {
 extension FeedController {
     private func configureUI() {
         view.backgroundColor = .white
+        navigationController?.navigationBar.backgroundColor = .white
         
         viewModel.reloadCallBack = {
             self.collection.reloadData()
@@ -86,7 +85,12 @@ extension FeedController {
 }
 
 //MARK: - UICollectionViewDelegate
-extension FeedController: UICollectionViewDelegate  { }
+extension FeedController: UICollectionViewDelegate  {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let controller = TweetController(viewModel: TweetViewModel(tweet: viewModel.tweets[indexPath.row]))
+        navigationController?.show(controller, sender: nil)
+    }
+}
 
 //MARK: - UICollectionViewDataSource
 extension FeedController: UICollectionViewDataSource {

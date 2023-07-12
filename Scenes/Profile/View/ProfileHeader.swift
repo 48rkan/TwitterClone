@@ -6,19 +6,19 @@ import UIKit
 
 protocol ProfileHeaderDelegate: AnyObject {
     func header(_ wantsToDismissal: UICollectionReusableView)
+    func header(_ didActionUser: User)
 }
 
 class ProfileHeader: UICollectionReusableView {
     
     //MARK: - Properties
+    weak var delegate: ProfileHeaderDelegate?
+
     var viewModel: ProfileHeaderViewModel? {
         didSet {
             configure()
         }
     }
-    
-    
-    weak var delegate: ProfileHeaderDelegate?
     
     private let bannerView: UIView = {
         let v = UIView()
@@ -43,11 +43,12 @@ class ProfileHeader: UICollectionReusableView {
         return iv
     }()
  
-    private let editProfileOrFollowButton: CustomButton = {
+    private lazy var editProfileOrFollowButton: CustomButton = {
         let b = CustomButton(title     : "Loading",
                              titleColor: .twitterBlue,
                              systemFont: UIFont.boldSystemFont(ofSize: 14),
                              size      : 14)
+        b.addTarget(self, action: #selector(tappedEditProfileOrFollowButton), for: .touchUpInside)
         return b
     }()
     
@@ -76,7 +77,7 @@ class ProfileHeader: UICollectionReusableView {
     
     private let followingLabel: UILabel = {
         let l  = UILabel()
-        l.setDetailedLabelConfiguration(text1     : "2",
+        l.setDetailedLabelConfiguration(text1     : "",
                                         text1Font : UIFont.boldSystemFont(ofSize: 14),
                                         text1Color: .black,
                                         text2     : " followers",
@@ -87,7 +88,7 @@ class ProfileHeader: UICollectionReusableView {
     
     private let followersLabel: UILabel = {
         let l  = UILabel()
-        l.setDetailedLabelConfiguration(text1     : "0",
+        l.setDetailedLabelConfiguration(text1     : "",
                                         text1Font : UIFont.boldSystemFont(ofSize: 14),
                                         text1Color: .black,
                                         text2     : " following",
@@ -121,17 +122,36 @@ class ProfileHeader: UICollectionReusableView {
         delegate?.header(self)
     }
     
+    @objc func tappedEditProfileOrFollowButton() {
+        guard let viewModel else { return }
+        delegate?.header(viewModel.user)
+    }
+}
+
+//MARK: - Helper methods
+extension ProfileHeader {
     func configure() {
         guard let viewModel = viewModel else { return }
         fullNameLabel.text = viewModel.fullName
         userNameLabel.text = viewModel.userName
         editProfileOrFollowButton.setTitle(viewModel.buttonTitle, for: .normal)
         profileImageView.setImage(stringURL: viewModel.profileImageURL)
+        
+        followingLabel.setDetailedLabelConfiguration(text1     : viewModel.followingCount,
+                                                     text1Font : UIFont.boldSystemFont(ofSize: 14),
+                                                     text1Color: .black,
+                                                     text2     : " followers",
+                                                     text2Font : UIFont.systemFont(ofSize: 14),
+                                                     text2Color: .lightGray)
+        
+        followersLabel.setDetailedLabelConfiguration(text1     : viewModel.followersCount,
+                                                     text1Font : UIFont.boldSystemFont(ofSize: 14),
+                                                     text1Color: .black,
+                                                     text2     : " following",
+                                                     text2Font : UIFont.systemFont(ofSize: 14),
+                                                     text2Color: .lightGray)
     }
-}
-
-//MARK: - Helper methods
-extension ProfileHeader {
+    
     func configureUI() {
         addSubview(bannerView)
         bannerView.anchor(top: topAnchor,

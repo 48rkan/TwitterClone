@@ -1,4 +1,3 @@
-//
 //  FilterCell.swift
 //  TwitterClone
 //  Created by Erkan Emir on 30.06.23.

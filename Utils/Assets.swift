@@ -23,6 +23,7 @@ enum Assets: String {
     case plus            = "plus_photo"
     case person          = "ic_person_outline_white_2x"
     case back            = "baseline_arrow_back_white_24dp"
+    case downArrow       = "down_arrow_24pt"
     
     func image() -> UIImage {
         UIImage(named: self.rawValue)!

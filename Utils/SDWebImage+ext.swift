@@ -1,14 +1,10 @@
 //
 //  SDWebImage+ext.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 23.06.23.
-//
 
 import Foundation
 import SDWebImage
-
-//profileImageView.sd_setImage(with: profileUrl)
 
 extension UIImageView {
     func setImage(stringURL: String) {

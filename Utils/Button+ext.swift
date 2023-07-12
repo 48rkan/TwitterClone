@@ -5,6 +5,17 @@
 
 import UIKit
 
+extension UIButton {
+    func createButton(image: String,
+                      tintColor: UIColor,
+                      height: CGFloat,width: CGFloat)  {
+        self.setImage(UIImage(named: image), for: .normal)
+        self.tintColor = tintColor
+        self.setDimensions(height: height, width: width)
+        
+    }
+}
+
 extension UIButton  {
     func setButtonConfiguration(firstText: String,
                                 firstTextColor: UIColor = .white,

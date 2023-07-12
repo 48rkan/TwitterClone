@@ -40,7 +40,11 @@ class ProfileController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = true
-        collection.contentInsetAdjustmentBehavior = .never
+        collection.contentInsetAdjustmentBehavior    = .never
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = false
     }
 }
 
@@ -97,5 +101,26 @@ extension ProfileController: UICollectionViewDelegateFlowLayout {
 extension ProfileController: ProfileHeaderDelegate {
     func header(_ wantsToDismissal: UICollectionReusableView) {
         navigationController?.popViewController(animated: true)
+    }
+    
+    func header(_ didActionUser: User) {
+        if didActionUser.isCurrentUser {
+            let controller = EditProfileController()
+            navigationController?.show(controller, sender: nil)
+        }
+        
+        else if didActionUser.isFollowing {
+            UserService.unfollow(uid: didActionUser.uid) { error in
+                self.viewModel.user.isFollowing = false
+                self.collection.reloadData()
+            }
+        }
+        
+        else {
+            UserService.follow(uid: didActionUser.uid) { error in
+                self.viewModel.user.isFollowing = true
+                self.collection.reloadData()
+            }
+        }
     }
 }

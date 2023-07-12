@@ -1,7 +1,6 @@
 //
 //  UploadController.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 23.06.23.
 
 import UIKit
@@ -39,18 +38,15 @@ class UploadController: UIViewController {
         b.addTarget(self,
                     action: #selector(tappedTweetButton),
                     for: .touchUpInside)
-        
         return b
     }()
     
-
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         configNavigationBar()
         print(AccountService.instance.currentUser?.fullname)
-
     }
     
     //MARK: - Actions
@@ -59,7 +55,6 @@ class UploadController: UIViewController {
     }
     
     @objc private func tappedTweetButton() {
-
         TweetService.uploadTweet(text: textView.text, user: viewModel.user) { error in
             print(error)
         }

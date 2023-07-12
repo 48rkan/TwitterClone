@@ -15,6 +15,8 @@ struct User {
     
     var isFollowing = false
     
+    var statistic: UserStatistic?
+    
     init(dictionary: [String:Any]) {
         self.email       = dictionary["email"]       as? String ?? ""
         self.fullname    = dictionary["fullname"]    as? String ?? ""
@@ -22,4 +24,9 @@ struct User {
         self.profilimage = dictionary["profilimage"] as? String ?? ""
         self.uid         = dictionary["uid"]         as? String ?? ""
     }
+}
+
+struct UserStatistic {
+    var followers: Int
+    var following: Int
 }

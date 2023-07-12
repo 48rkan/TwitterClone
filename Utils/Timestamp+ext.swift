@@ -16,4 +16,14 @@ extension Timestamp {
         
         return formatter.string(from: self.dateValue(), to: now) ?? "2h"
     }
+    
+    func detailedTime() -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(self.seconds))
+        var stringDate = "\(date)"
+        
+        for _ in 0...4 { stringDate.removeLast() }
+
+        return stringDate
+    }
 }
+

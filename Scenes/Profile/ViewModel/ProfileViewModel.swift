@@ -5,7 +5,7 @@
 import Foundation
 
 class ProfileViewModel {
-//    var uid: String
+
     var user: User
     var tweets = [Tweet]()
     var callBack: (()->())?
@@ -13,8 +13,9 @@ class ProfileViewModel {
     init(user: User) {
         self.user = user
         fetchSelectedUserTweets()
+        checkIfUserIsFollowed()
+        fetchUserStatistic()
     }
-    
     
     func fetchSelectedUserTweets() {
         TweetService.fetchSelectedUserTweets(userUid: user.uid) { tweets in
@@ -23,36 +24,16 @@ class ProfileViewModel {
         }
     }
     
-//    var callBack: (()->())?
-        
-//    init(uid: String) {
-//        self.uid = uid
-////        fetchSelectedUser()
-//    }
-    
-//    func fetchSelectedUser() {
-//        UserService.fetchSelectedUser(userUid: uid) { user in
-//            self.user = user
-//            self.callBack?()
-//        }
-//    }
-}
+    func checkIfUserIsFollowed() {
+        UserService.checkIfUserIsFollowed(uid: user.uid) { isExist in
+            self.user.isFollowing = isExist
+        }
+    }
 
-//class ProfileViewModel {
-//    var uid: String
-//    var user: User?
-//
-//    var callBack: (()->())?
-//
-//    init(uid: String) {
-//        self.uid = uid
-////        fetchSelectedUser()
-//    }
-//
-//    func fetchSelectedUser() {
-//        UserService.fetchSelectedUser(userUid: uid) { user in
-//            self.user = user
-//            self.callBack?()
-//        }
-//    }
-//}
+    func fetchUserStatistic() {
+        UserService.fetchUserStatistic(uid: user.uid) { currentStat in
+            self.user.statistic = currentStat
+            self.callBack?()
+        }
+    }
+}

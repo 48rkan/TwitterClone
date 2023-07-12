@@ -1,4 +1,3 @@
-//
 //  FeedCell.swift
 //  TwitterClone
 //  Created by Erkan Emir on 26.06.23.
@@ -43,6 +42,8 @@ class FeedCell: UICollectionViewCell {
         b.tintColor = .lightGray
         return b
     }()
+    
+    
     
     private lazy var retweetButton: UIButton = {
         let b = UIButton()
