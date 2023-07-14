@@ -22,7 +22,6 @@ class UploadController: UIViewController {
         iv.setDimensions(height: 48, width: 48)
         iv.layer.cornerRadius = 24
         iv.setImage(stringURL: viewModel.profilimage)
-
         return iv
     }()
     
