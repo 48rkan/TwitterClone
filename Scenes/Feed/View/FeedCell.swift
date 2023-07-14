@@ -4,6 +4,8 @@
 
 protocol FeedCellDelegate: AnyObject {
     func cell(_ wantsToShowProfileScene: FeedCell ,ownerUid: String)
+    func cell(_ wantsToReplies: FeedCell ,uid: String)
+
 }
 
 import UIKit
@@ -40,6 +42,7 @@ class FeedCell: UICollectionViewCell {
         let b = UIButton()
         b.setImage(Assets.comment.image(), for: .normal)
         b.tintColor = .lightGray
+        b.addTarget(self, action: #selector(tappedCommentButton), for: .touchUpInside)
         return b
     }()
     
@@ -83,6 +86,10 @@ class FeedCell: UICollectionViewCell {
     //MARK: - Actions
     @objc func tappedProfileImageView() {
         delegate?.cell(self, ownerUid: viewModel?.items.ownerUID ?? "")
+    }
+    
+    @objc func tappedCommentButton() {
+        delegate?.cell(self, uid: viewModel?.items.ownerUID ?? "")
     }
 }
 

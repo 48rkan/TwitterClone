@@ -27,7 +27,8 @@ class MainTabBarController: UITabBarController {
     
     //MARK: - Actions
     @objc private func tappedActionButton() {
-        let controller = UploadController()
+        let controller = UploadController(viewModel: UploadViewModel(configuration: .tweet))
+
         controller.delegate = self
         let nav = UINavigationController(rootViewController: controller)
         nav.modalPresentationStyle = .fullScreen

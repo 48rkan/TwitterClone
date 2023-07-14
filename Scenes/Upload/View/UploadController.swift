@@ -1,4 +1,3 @@
-//
 //  UploadController.swift
 //  TwitterClone
 //  Created by Erkan Emir on 23.06.23.
@@ -14,25 +13,31 @@ class UploadController: UIViewController {
     //MARK: - Properties
     weak var delegate: UploadControllerDelegate?
     
-    var viewModel = UploadViewModel()
+    var viewModel: UploadViewModel
     
-    private let profileImageView: UIImageView = {
+    private lazy var profileImageView: UIImageView = {
         let iv = UIImageView()
         iv.backgroundColor  = .red
         iv.clipsToBounds    = true
+        iv.setDimensions(height: 48, width: 48)
+        iv.layer.cornerRadius = 24
+        iv.setImage(stringURL: viewModel.profilimage)
+
         return iv
     }()
     
     private lazy var textView: CustomTextView = {
-        let tv = CustomTextView(text: "Enter caption")
+        let tv = CustomTextView(text: viewModel.placeHolderText ?? "")
         tv.delegate_ = self
         return tv
     }()
     
     private lazy var tweetButton: CustomButton = {
         let b = CustomButton(backgroundColor: .lightGray,
-                             title: "Tweet", titleColor: .white,
-                             size : 16     , cornerRadius: 16)
+                             title          : viewModel.buttonTitle ?? "",
+                             titleColor     : .white,
+                             size           : 16,
+                             cornerRadius   : 16)
         b.setDimensions(height: 32, width: 64)
         b.titleLabel?.textAlignment = .center
         b.addTarget(self,
@@ -41,12 +46,26 @@ class UploadController: UIViewController {
         return b
     }()
     
+    lazy var replyLabel: UILabel = {
+        let l = UILabel()
+        l.text = viewModel.replyText ?? ""
+        l.font = UIFont.systemFont(ofSize: 14)
+        l.textColor = .lightGray
+        return l
+    }()
+    
     //MARK: - Lifecycle
+    init(viewModel: UploadViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         configNavigationBar()
-        print(AccountService.instance.currentUser?.fullname)
     }
     
     //MARK: - Actions
@@ -55,13 +74,17 @@ class UploadController: UIViewController {
     }
     
     @objc private func tappedTweetButton() {
-        TweetService.uploadTweet(text: textView.text, user: viewModel.user) { error in
-            print(error)
+        
+        switch viewModel.configuration {
+        case .tweet:
+            TweetService.uploadTweet(text: textView.text, user: viewModel.user) { _ in  }
+            delegate?.controller(self)
+
+        case .replies(_):
+            return
         }
         
         dismiss(animated: true)
-        delegate?.controller(self)
-        print("OK")
     }
 }
 
@@ -70,17 +93,27 @@ extension UploadController {
     
     private func configureUI() {
         view.backgroundColor = .white
+ 
+        let mainStack = UIStackView(arrangedSubviews: [profileImageView,textView])
+        view.addSubview(mainStack)
+        mainStack.axis         = .horizontal
+        mainStack.distribution = .fill
         
-        view.addSubview(profileImageView)
-        profileImageView.anchor(top: view.safeAreaLayoutGuide.topAnchor,
-                                left: view.leftAnchor,
-                                paddingTop: 8,paddingLeft: 8)
-        profileImageView.setDimensions(height: 56, width: 56)
-        profileImageView.layer.cornerRadius = 28
-        profileImageView.setImage(stringURL: viewModel.profilimage)
         
-        view.addSubview(textView)
-        textView.anchor(top: view.safeAreaLayoutGuide.topAnchor,left: profileImageView.rightAnchor,bottom: view.safeAreaLayoutGuide.bottomAnchor,right: view.rightAnchor,paddingTop: 8,paddingLeft: 4,paddingBottom: 0,paddingRight: 4)
+        mainStack.anchor(top: view.safeAreaLayoutGuide.topAnchor,
+                     left: view.leftAnchor,
+                     right: view.rightAnchor,
+                     paddingTop: 16,paddingLeft: 16,paddingRight: 16)
+        
+        let subStack = UIStackView(arrangedSubviews: [replyLabel,mainStack])
+        view.addSubview(subStack)
+        subStack.axis    = .vertical
+        subStack.spacing = 8
+        subStack.anchor(top: view.safeAreaLayoutGuide.topAnchor,left: view.leftAnchor,right: view.rightAnchor,paddingTop: 4,paddingLeft: 4,paddingRight: 4)
+        
+        guard let isHidden  = viewModel.shouldShowReplyLabel else { return }
+        replyLabel.isHidden = !isHidden
+//        replyLabel.isHidden = true
     }
 
     private func configNavigationBar() {

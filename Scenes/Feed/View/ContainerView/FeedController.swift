@@ -117,6 +117,15 @@ extension FeedController: UICollectionViewDelegateFlowLayout {
 
 //MARK: - FeedCellDelegate
 extension FeedController: FeedCellDelegate {
+    func cell(_ wantsToReplies: FeedCell, uid: String) {
+        guard let tweet = wantsToReplies.viewModel?.items else { return }
+        let controller = UploadController(viewModel: UploadViewModel(configuration: .replies(tweet)))
+        
+        let nav = UINavigationController(rootViewController: controller)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
+    }
+    
     func cell(_ wantsToShowProfileScene: FeedCell, ownerUid: String) {
         viewModel.fetchSelectedUser(userUid: ownerUid) { user in
             let controller = ProfileController(viewModel: ProfileViewModel(user: user))
