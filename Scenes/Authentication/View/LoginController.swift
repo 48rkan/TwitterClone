@@ -1,9 +1,6 @@
-//
 //  LoginController.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 21.06.23.
-//
 
 import UIKit
 

@@ -14,11 +14,13 @@ class TweetController: UIViewController {
         let c = CustomCollectionView(scroll: .vertical, spacing: 4)
         c.delegate   = self
         c.dataSource = self
-        c.backgroundColor = .red
         c.register(TweetHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "\(TweetHeader.self)")
+        c.register(FeedCell.self, forCellWithReuseIdentifier: "\(FeedCell.self)")
         
         return c
     }()
+    
+    private lazy var actionSheetLauncher = ActionSheetLauncher(viewModel: ActionViewModel(user: viewModel.selectedUser!))
     
     //MARK: - Lifecycle
     init(viewModel: TweetViewModel) {
@@ -31,6 +33,7 @@ class TweetController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        viewModel.callBack = { self.collection.reloadData() }
     }
     
     //MARK: - Actions
@@ -57,15 +60,18 @@ extension TweetController: UICollectionViewDelegate { }
 //MARK: - UICollectionViewDataSource
 extension TweetController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        0
+        viewModel.replies.count
     }
         
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        UICollectionViewCell()
+        let cell = collection.dequeueReusableCell(withReuseIdentifier: "\(FeedCell.self)", for: indexPath) as! FeedCell
+        cell.viewModel = FeedCellViewModel(items: viewModel.replies[indexPath.row])
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collection.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "\(TweetHeader.self)", for: indexPath) as! TweetHeader
+        header.delegate = self
         header.viewModel = TweetHeaderViewModel(tweet: viewModel.tweet)
         return header
     }
@@ -78,5 +84,16 @@ extension TweetController: UICollectionViewDelegateFlowLayout {
                                              width: view.frame.width) + 240
         
         return CGSize(width: view.frame.width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: view.frame.width, height: 100)
+    }
+}
+
+//MARK: - TweetHeaderDelegate
+extension TweetController: TweetHeaderDelegate {
+    func showActionLauncher() {
+        actionSheetLauncher.show()
     }
 }

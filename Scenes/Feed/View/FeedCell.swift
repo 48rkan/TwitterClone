@@ -3,9 +3,8 @@
 //  Created by Erkan Emir on 26.06.23.
 
 protocol FeedCellDelegate: AnyObject {
-    func cell(_ wantsToShowProfileScene: FeedCell ,ownerUid: String)
-    func cell(_ wantsToReplies: FeedCell ,uid: String)
-
+    func cell(wantsToShowProfileScene: FeedCell, uid: String)
+    func cell(wantsToReplies: FeedCell         , uid: String)
 }
 
 import UIKit
@@ -46,8 +45,6 @@ class FeedCell: UICollectionViewCell {
         return b
     }()
     
-    
-    
     private lazy var retweetButton: UIButton = {
         let b = UIButton()
         b.setImage(Assets.retweet.image(), for: .normal)
@@ -85,11 +82,11 @@ class FeedCell: UICollectionViewCell {
     
     //MARK: - Actions
     @objc func tappedProfileImageView() {
-        delegate?.cell(self, ownerUid: viewModel?.items.ownerUID ?? "")
+        delegate?.cell(wantsToShowProfileScene: self, uid: viewModel?.items.ownerUID ?? "")
     }
     
     @objc func tappedCommentButton() {
-        delegate?.cell(self, uid: viewModel?.items.ownerUID ?? "")
+        delegate?.cell(wantsToReplies: self, uid: viewModel?.items.ownerUID ?? "")
     }
 }
 
@@ -138,7 +135,7 @@ extension FeedCell {
         
         captionLabel.text = viewModel.items.text
 
-        profileImageView.setImage(stringURL: viewModel.items.ownerProfilImageUrl)
+        profileImageView.setImage(stringURL: viewModel.items.profileImageURL)
         
         infoButton.setDetailedButtonConfiguration(text1     : viewModel.fullName,
                                                   text1Font : UIFont.boldSystemFont(ofSize: 14),

@@ -6,10 +6,11 @@ import Foundation
 
 class FeedViewModel {
     
-    var profilimage  : String?
-    var callBack     : (()->())?
-    var tweets       = [Tweet]()
+    var tweets        = [Tweet]()
+    var profilimage   : String?
+    var callBack      : (()->())?
     var reloadCallBack: (()->())?
+    var isCurrentUser : Bool?
     
     init() {
         fetchAllTweets()
@@ -20,6 +21,7 @@ class FeedViewModel {
         UserService.fetchUser { user in
             self.profilimage = user.profilimage
             print(user.isCurrentUser)
+            self.isCurrentUser = user.isCurrentUser
             self.callBack?()
         }
     }

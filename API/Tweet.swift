@@ -1,10 +1,16 @@
-//
 //  Tweet.swift
 //  TwitterClone
 //  Created by Erkan Emir on 26.06.23.
 
 import Foundation
 import FirebaseFirestore
+
+extension Tweet: FeedCellProtocol {
+    var profileImageURL : String    { ownerProfilImageUrl }
+    var fullName        : String    { ownerFullName       }
+    var userName        : String    { ownerUserName       }
+    var times           : Timestamp { time                }
+}
 
 struct Tweet {
     let tweetID            : String
@@ -31,3 +37,4 @@ struct Tweet {
         self.ownerProfilImageUrl = dictionary["ownerProfilImageUrl"] as! String
     }
 }
+

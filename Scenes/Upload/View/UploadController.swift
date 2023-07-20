@@ -79,8 +79,13 @@ class UploadController: UIViewController {
             TweetService.uploadTweet(text: textView.text, user: viewModel.user) { _ in  }
             delegate?.controller(self)
 
-        case .replies(_):
-            return
+        case .replies(let tweet):
+            ReplyService.uploadReply(comments: textView.text,
+                                     tweetID: tweet.tweetID,
+                                     user: viewModel.user) { error in
+                print(error)
+            }
+            
         }
         
         dismiss(animated: true)

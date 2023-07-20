@@ -28,7 +28,6 @@ class CustomLabel: UILabel {
             self.font = systemfont
         } else {
             self.font = UIFont(name: font, size: size ?? CGFloat(1))
-
         }
         
         self.text = text

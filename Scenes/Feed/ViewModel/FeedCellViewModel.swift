@@ -5,16 +5,26 @@
 //  Created by Erkan Emir on 26.06.23.
 
 import Foundation
+import FirebaseFirestore
+
+protocol FeedCellProtocol {
+    var fullName       : String    { get }
+    var userName       : String    { get }
+    var times          : Timestamp { get }
+    var text           : String    { get }
+    var ownerUID       : String    { get }
+    var profileImageURL: String    { get }
+    var tweetID        : String    { get }
+}
 
 class FeedCellViewModel {
-    var items: Tweet
+    var items: FeedCellProtocol
     
-    init(items: Tweet) {
-        
+    init(items: FeedCellProtocol) {
         self.items = items
     }
     
-    var fullName: String { items.ownerFullName  }
-    var userName: String { " @\(items.ownerUserName)"  }
-    var time    : String { " ∙ \(items.time.convertToRealTime())"}
+    var fullName: String { items.fullName  }
+    var userName: String { " @\(items.userName)"  }
+    var time    : String { " ∙ \(items.times.convertToRealTime())"}
 }

@@ -5,9 +5,16 @@
 
 import UIKit
 
+
+protocol TweetHeaderDelegate: AnyObject {
+    func showActionLauncher()
+}
+
 class TweetHeader: UICollectionReusableView {
     
     //MARK: - Properties
+    weak var delegate: TweetHeaderDelegate?
+    
     var viewModel: TweetHeaderViewModel? {
         didSet {
             configure()
@@ -58,9 +65,10 @@ class TweetHeader: UICollectionReusableView {
         return l
     }()
     
-    private let optionsButton: UIButton = {
+    private lazy var optionsButton: UIButton = {
         let b = UIButton()
         b.setImage(Assets.downArrow.image(), for: .normal)
+        b.addTarget(self, action: #selector(tappedOptionsButton), for: .touchUpInside)
         b.tintColor = .lightGray
         return b
     }()
@@ -132,6 +140,11 @@ class TweetHeader: UICollectionReusableView {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
     
     //MARK: - Actions
+    @objc func tappedOptionsButton() {
+        print("h")
+        delegate?.showActionLauncher()
+    }
+    
     func configure() {
         guard let viewModel else { return }
         fullNameLabel.text = viewModel.fullNameLabel

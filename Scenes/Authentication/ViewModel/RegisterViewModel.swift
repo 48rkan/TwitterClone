@@ -1,7 +1,5 @@
-//
 //  RegisterViewModel.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 22.06.23.
 
 import UIKit

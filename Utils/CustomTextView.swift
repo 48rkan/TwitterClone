@@ -1,7 +1,5 @@
-//
 //  CustomTextView.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 24.06.23.
 
 import UIKit
@@ -12,6 +10,7 @@ protocol CustomTextViewDelegate: AnyObject {
 
 class CustomTextView: UITextView {
     
+    //MARK: - Properties
     weak var delegate_: CustomTextViewDelegate?
     
     private let placeholder: UILabel = {

@@ -8,17 +8,17 @@ import FirebaseAuth
 import FirebaseFirestore
 
 struct AuthCredential {
-    var email: String
-    var password: String
-    var fullname: String
-    var username: String
+    var email       : String
+    var password    : String
+    var fullname    : String
+    var username    : String
     var profileImage: UIImage
 }
 
 struct AuthService {
     
-    static func logUserIn(email: String,
-                          password: String,
+    static func logUserIn(email     : String,
+                          password  : String,
                           completion: @escaping (AuthDataResult?,Error?) ->()) {
         
         Auth.auth().signIn(withEmail: email, password: password) { authDataResult, error in
@@ -26,11 +26,13 @@ struct AuthService {
         }
     }
     
-    static func registerUser(credential: AuthCredential, completion: @escaping (Error?) -> ()) {
+    static func registerUser(credential: AuthCredential,
+                             completion: @escaping (Error?) -> ()) {
         
         ImageUploader.uploadImage(image: credential.profileImage) { imageUrl in
             
-            Auth.auth().createUser(withEmail: credential.email, password: credential.password) { result, error in
+            Auth.auth().createUser(withEmail: credential.email,
+                                   password : credential.password) { result, error in
                 if error != nil { completion(error) }
                 
                 guard let uid = result?.user.uid else { return }

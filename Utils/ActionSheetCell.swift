@@ -1,29 +1,28 @@
-//  TableCell.swift
+//  ActionSheetCell.swift
 //  TwitterClone
-//  Created by Erkan Emir on 03.07.23.
+//  Created by Erkan Emir on 19.07.23.
 
 import UIKit
 
-class TableCell: UITableViewCell {
+class ActionSheetCell: UITableViewCell {
     
     //MARK: - Properties
-    var viewModel: TableCellViewModel? {
+    var viewModel: ActionSheetCellViewModel? {
         didSet {
             configure()
         }
     }
-    
     private let iconImageView: UIImageView = {
         let iv = UIImageView()
-        iv.backgroundColor = .lightGray
-        
+        iv.backgroundColor = .red
+        iv.contentMode = .scaleAspectFit
         return iv
     }()
     
     private let titleLabel: UILabel = {
         let l = UILabel()
-        l.text = "ZZZ"
-        
+        l.textColor = UIColor.red
+        l.font = UIFont.systemFont(ofSize: 16)
         return l
     }()
     
@@ -35,22 +34,19 @@ class TableCell: UITableViewCell {
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
     
+    //MARK: - Helper & Actions
+    func configure() {
+        titleLabel.text = viewModel?.item.description
+    }
+    
     func configureUI() {
-        self.selectionStyle = .none
-        
         contentView.addSubview(iconImageView)
-        iconImageView.centerY(inView: self)
-        iconImageView.setDimensions(height: 24, width: 24)
+        iconImageView.centerY(inView: self,leftAnchor: leftAnchor,paddingLeft: 8)
+        iconImageView.setDimensions(height: 36, width: 36)
         
         contentView.addSubview(titleLabel)
-        titleLabel.centerY(inView: iconImageView)
-        titleLabel.anchor(left: iconImageView.rightAnchor,paddingLeft: 4)
+        titleLabel.centerY(inView: self, leftAnchor: iconImageView.rightAnchor,paddingLeft: 12)
+
     }
-    
-    func configure() {
-        iconImageView.image = UIImage(systemName: viewModel?.datas.image ?? "")
-        iconImageView.tintColor = .black
-        titleLabel.text = viewModel?.datas.description
-    }
-    
+
 }

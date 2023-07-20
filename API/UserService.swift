@@ -20,9 +20,12 @@ class UserService {
             }
     }
     
-    static func fetchSelectedUser(userUid: String, completion: @escaping (User)->()) {
+    static func fetchSelectedUser(userUid   : String,
+                                  completion: @escaping (User)->()) {
         
-        Firestore.firestore().collection("user").document(userUid).getDocument { documentSnapshot, error in
+        Firestore.firestore().collection("user")
+            .document(userUid)
+            .getDocument { documentSnapshot, error in
             
             guard let dictionary = documentSnapshot?.data() else { return }
             
@@ -90,7 +93,8 @@ class UserService {
             }
     }
     
-    static func checkIfUserIsFollowed(uid: String,completion: @escaping (Bool)->()) {
+    static func checkIfUserIsFollowed(uid       : String,
+                                      completion: @escaping (Bool)->()) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         
         Firestore.firestore()
@@ -106,8 +110,8 @@ class UserService {
             }
     }
     
-    static func fetchUserStatistic(uid: String,completion: @escaping (UserStatistic)->()) {
-        
+    static func fetchUserStatistic(uid       : String,
+                                   completion: @escaping (UserStatistic)->()) {
         Firestore.firestore()
             .collection("following")
             .document(uid)

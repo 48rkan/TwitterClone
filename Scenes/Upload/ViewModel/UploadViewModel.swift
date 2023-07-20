@@ -7,7 +7,7 @@ import Foundation
 
 enum UploadViewConfiguration {
     case tweet
-    case replies(Tweet)
+    case replies(FeedCellProtocol)
 }
 
 class UploadViewModel {
@@ -32,7 +32,7 @@ class UploadViewModel {
             self.buttonTitle          = "Reply"
             self.placeHolderText      = "Enter reply"
             self.shouldShowReplyLabel = true
-            self.replyText            = "Replying to @\(tweet.ownerUserName)"
+            self.replyText            = "Replying to @\(tweet.userName)"
         }
     }
 }

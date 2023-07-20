@@ -11,7 +11,6 @@ import FirebaseCore
         
         FirebaseApp.configure()
         AccountService.instance.fetchUser()
-       
         return true
     }
 

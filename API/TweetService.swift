@@ -8,8 +8,8 @@ import FirebaseFirestore
 
 struct TweetService {
     
-    static func uploadTweet(text:String,
-                            user: User,
+    static func uploadTweet(text      :String,
+                            user      : User,
                             completion: @escaping (Error?)->()) {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }

@@ -12,7 +12,6 @@ extension UIButton {
         self.setImage(UIImage(named: image), for: .normal)
         self.tintColor = tintColor
         self.setDimensions(height: height, width: width)
-        
     }
 }
 

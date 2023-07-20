@@ -94,7 +94,6 @@ extension FeedController: UICollectionViewDelegate  {
 
 //MARK: - UICollectionViewDataSource
 extension FeedController: UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.tweets.count
     }
@@ -117,7 +116,14 @@ extension FeedController: UICollectionViewDelegateFlowLayout {
 
 //MARK: - FeedCellDelegate
 extension FeedController: FeedCellDelegate {
-    func cell(_ wantsToReplies: FeedCell, uid: String) {
+    func cell(wantsToShowProfileScene: FeedCell, uid: String) {
+        viewModel.fetchSelectedUser(userUid: uid) { user in
+            let controller = ProfileController(viewModel: ProfileViewModel(user: user))
+            self.navigationController?.show(controller, sender: nil)
+        }
+    }
+    
+    func cell(wantsToReplies: FeedCell, uid: String) {
         guard let tweet = wantsToReplies.viewModel?.items else { return }
         let controller = UploadController(viewModel: UploadViewModel(configuration: .replies(tweet)))
         
@@ -126,10 +132,21 @@ extension FeedController: FeedCellDelegate {
         present(nav, animated: true)
     }
     
-    func cell(_ wantsToShowProfileScene: FeedCell, ownerUid: String) {
-        viewModel.fetchSelectedUser(userUid: ownerUid) { user in
-            let controller = ProfileController(viewModel: ProfileViewModel(user: user))
-            self.navigationController?.show(controller, sender: nil)
-        }
-    }
+    
+    
+//    func cell(wantsToReplies: FeedCell, uid: String) {
+//        guard let tweet = wantsToReplies.viewModel?.items else { return }
+//        let controller = UploadController(viewModel: UploadViewModel(configuration: .replies(tweet)))
+//
+//        let nav = UINavigationController(rootViewController: controller)
+//        nav.modalPresentationStyle = .fullScreen
+//        present(nav, animated: true)
+//    }
+//
+//    func cell(wantsToShowProfileScene: FeedCell, ownerUid: String) {
+//        viewModel.fetchSelectedUser(userUid: ownerUid) { user in
+//            let controller = ProfileController(viewModel: ProfileViewModel(user: user))
+//            self.navigationController?.show(controller, sender: nil)
+//        }
+//    }
 }
