@@ -1,9 +1,6 @@
-//
 //  CustomButton.swift
 //  Giphy
-//
 //  Created by Erkan Emir on 07.06.23.
-//
 
 import UIKit
 

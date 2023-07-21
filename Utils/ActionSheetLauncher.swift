@@ -4,9 +4,15 @@
 
 import UIKit
 
+protocol ActionSheetLauncherDelegate: AnyObject {
+    func didSelect(_ option: ActionSheetOptions)
+}
+
 class ActionSheetLauncher: NSObject {
     
     //MARK: - Properties
+    weak var delegate: ActionSheetLauncherDelegate?
+    
     var viewModel: ActionViewModel
     
     private lazy var blackView: UIView = {
@@ -43,7 +49,7 @@ class ActionSheetLauncher: NSObject {
 
         return b
     }()
-    
+
     private lazy var footerView: UIView = {
         let v = UIView()
         v.addSubview(cancelButton)
@@ -68,7 +74,6 @@ class ActionSheetLauncher: NSObject {
         }
     }
     
-    
     //MARK: - Helper
     func show() {
         guard let window = UIApplication.shared.connectedScenes.compactMap({ ($0 as? UIWindowScene)?.keyWindow }).last else { return }
@@ -89,7 +94,14 @@ class ActionSheetLauncher: NSObject {
 }
 
 //MARK: - UITableViewDelegate
-extension ActionSheetLauncher: UITableViewDelegate { }
+extension ActionSheetLauncher: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath.item)
+        print(viewModel.type[indexPath.row])
+        delegate?.didSelect(viewModel.type[indexPath.row])
+        handleDismissal()
+    }
+}
 
 //MARK: - UITableViewDataSource
 extension ActionSheetLauncher: UITableViewDataSource {
@@ -107,11 +119,7 @@ extension ActionSheetLauncher: UITableViewDataSource {
 
 //MARK: - UITableViewFooter
 extension ActionSheetLauncher {
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        footerView
-    }
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? { footerView }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        60
-    }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { 60 }
 }

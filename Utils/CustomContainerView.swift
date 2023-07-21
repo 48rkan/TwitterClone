@@ -1,9 +1,6 @@
-//
 //  CustomContainerView.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 21.06.23.
-//
 
 import UIKit
 
@@ -14,7 +11,6 @@ protocol CustomContainerViewDelegate: AnyObject {
 class CustomContainerView: UIView {
     
     //MARK: - Properties
-    
     weak var delegate: CustomContainerViewDelegate?
     
     private lazy var imageView = UIImageView()
@@ -55,6 +51,5 @@ class CustomContainerView: UIView {
         addSubview(divider)
         divider.anchor(top: textField.bottomAnchor,left: leftAnchor,right: rightAnchor,paddingTop: 4,paddingLeft: 4,paddingBottom: 0)
         divider.setHeight(0.75)
-        
     }
 }

@@ -66,7 +66,7 @@ class LoginController: UIViewController {
                 return
             }
 
-            guard let window = UIApplication.shared.connectedScenes.compactMap { ($0 as? UIWindowScene)?.keyWindow }.last else { return }
+            guard let window = UIApplication.shared.connectedScenes.compactMap({ ($0 as? UIWindowScene)?.keyWindow }).last else { return }
             guard let tabBar = window.rootViewController as? MainTabBarController else { return }
             
             tabBar.checkAuthenticateUser()

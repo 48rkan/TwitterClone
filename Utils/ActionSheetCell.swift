@@ -14,7 +14,7 @@ class ActionSheetCell: UITableViewCell {
     }
     private let iconImageView: UIImageView = {
         let iv = UIImageView()
-        iv.backgroundColor = .red
+        iv.image = Assets.twitterLogoBlue.image()
         iv.contentMode = .scaleAspectFit
         return iv
     }()
@@ -31,6 +31,7 @@ class ActionSheetCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
     }
+    
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
     

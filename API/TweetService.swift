@@ -60,4 +60,8 @@ struct TweetService {
                 completion(posts)
             }
     }
+    
+    static func deleteTweet(tweetID: String) {
+        Firestore.firestore().collection("tweets").document(tweetID).delete()
+    }
 }

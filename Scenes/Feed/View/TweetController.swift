@@ -19,8 +19,13 @@ class TweetController: UIViewController {
         
         return c
     }()
-    
-    private lazy var actionSheetLauncher = ActionSheetLauncher(viewModel: ActionViewModel(user: viewModel.selectedUser!))
+        
+    private lazy var actionSheetLauncher: ActionSheetLauncher = {
+        let a = ActionSheetLauncher(viewModel: ActionViewModel(user: viewModel.user,
+                                                               tweetID: viewModel.tweetID))
+        a.delegate = self
+        return a
+    }()
     
     //MARK: - Lifecycle
     init(viewModel: TweetViewModel) {
@@ -95,5 +100,21 @@ extension TweetController: UICollectionViewDelegateFlowLayout {
 extension TweetController: TweetHeaderDelegate {
     func showActionLauncher() {
         actionSheetLauncher.show()
+    }
+}
+
+//MARK: - ActionSheetLauncherDelegate
+extension TweetController: ActionSheetLauncherDelegate {
+    func didSelect(_ option: ActionSheetOptions) {
+        switch option {
+        case .follow(let user):
+            UserService.follow(uid: user.uid)   { error in }
+        case .unfollow(let user):
+            UserService.unfollow(uid: user.uid) { error in }
+        case .delete(let tweetID):
+            TweetService.deleteTweet(tweetID: tweetID)
+        case .report:
+            print("report called")
+        }
     }
 }

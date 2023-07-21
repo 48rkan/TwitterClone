@@ -100,10 +100,9 @@ extension MainTabBarController {
 //MARK: - UploadControllerDelegate
 extension MainTabBarController: UploadControllerDelegate {
     func controller(_ postUpdateDidComplete: UIViewController) {
-        guard let nav  = self.viewControllers?[0] as? UINavigationController else { return }
-        guard let feed = nav.viewControllers[0]   as? FeedController         else { return }
-        
-        feed.viewModel.fetchAllTweets()
+        guard let container = viewControllers?.first as? ContainerViewController else { return }
+        container.viewModel.feedVC.viewModel.fetchAllTweets()
+    
         selectedIndex = 0
     }
 }

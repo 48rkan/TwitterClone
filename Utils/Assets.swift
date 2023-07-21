@@ -1,9 +1,6 @@
-//
 //  Assets.swift
 //  TwitterClone
-//
 //  Created by Erkan Emir on 20.06.23.
-//
 
 import UIKit
 

@@ -1,4 +1,3 @@
-//
 //  UILabel+ext.swift
 //  TwitterClone
 //  Created by Erkan Emir on 01.07.23.
@@ -6,7 +5,7 @@
 import UIKit
 
 extension UILabel {
-    func setDetailedLabelConfiguration  (text1       : String,
+    func setDetailedLabelConfiguration  (text1      : String,
                                         text1Font   : UIFont,
                                         text1Color  : UIColor,
                                         text2       : String,

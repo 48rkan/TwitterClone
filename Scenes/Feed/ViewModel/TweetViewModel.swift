@@ -19,6 +19,9 @@ class TweetViewModel {
         fetchSelectedUser()
     }
     
+    var user   : User   { selectedUser ?? User(dictionary: [:]) }
+    var tweetID: String { tweet.tweetID }
+    
     func fetchSelectedUser() {
         UserService.fetchSelectedUser(userUid: tweet.ownerUID) { user in
             self.selectedUser = user
