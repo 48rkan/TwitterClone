@@ -5,6 +5,7 @@
 protocol FeedCellDelegate: AnyObject {
     func cell(wantsToShowProfileScene: FeedCell, uid: String)
     func cell(wantsToReplies: FeedCell         , uid: String)
+    func cell(wantsToLikes: FeedCell           , item: inout Tweet)
 }
 
 import UIKit
@@ -52,10 +53,11 @@ class FeedCell: UICollectionViewCell {
         return b
     }()
     
-    private lazy var likeButton: UIButton = {
+    lazy var likeButton: UIButton = {
         let b = UIButton()
-        b.setImage(Assets.like.image(), for: .normal)
+        b.setImage(Assets.like_unselected.image(), for: .normal)
         b.tintColor = .lightGray
+        b.addTarget(self, action: #selector(tappedLikeButton), for: .touchUpInside)
         return b
     }()
     
@@ -87,6 +89,11 @@ class FeedCell: UICollectionViewCell {
     
     @objc func tappedCommentButton() {
         delegate?.cell(wantsToReplies: self, uid: viewModel?.items.ownerUID ?? "")
+    }
+    
+    @objc func tappedLikeButton() {
+        guard let viewModel else { return }
+        delegate?.cell(wantsToLikes: self, item: &viewModel.items)
     }
 }
 
@@ -134,8 +141,13 @@ extension FeedCell {
         guard let viewModel = viewModel else { return }
         
         captionLabel.text = viewModel.items.text
+        
+        viewModel.callBack = {
+            self.likeButton.setImage(viewModel.buttonImage, for: .normal)
+            self.likeButton.tintColor = viewModel.buttonTintColor
+        }
 
-        profileImageView.setImage(stringURL: viewModel.items.profileImageURL)
+        profileImageView.setImage(stringURL: viewModel.items.ownerProfilImageUrl)
         
         infoButton.setDetailedButtonConfiguration(text1     : viewModel.fullName,
                                                   text1Font : UIFont.boldSystemFont(ofSize: 14),

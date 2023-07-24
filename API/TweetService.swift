@@ -64,4 +64,48 @@ struct TweetService {
     static func deleteTweet(tweetID: String) {
         Firestore.firestore().collection("tweets").document(tweetID).delete()
     }
+    
+    
+    static func likeTweet(tweet: Tweet , completion: @escaping (Error?)->()) {
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+// Firestore.firestore().collection("post").document(tweet.tweetID).updateData(["likes": tweet.likes + 1 ])
+//        Firestore.firestore().collection("post").document(tweet.tweetID).updateData(["liked": true ])
+//
+        Firestore.firestore().collection("tweets").document(tweet.tweetID).collection("post-likes").document(uid).setData([:]) { _ in
+            
+            Firestore.firestore().collection("user").document(uid).collection("user-likes").document(tweet.tweetID).setData([:]) { error in
+                completion(error)
+            }
+        }
+    }
+    
+    static func unLikeTweet(tweet: Tweet , completion: @escaping (Error?)->()) {
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+//        //condition qoyulmalidi 0 dan boyuk olsun
+//        Firestore.firestore().collection("post").document(post.postId).updateData(["likes": post.likes - 1 ])
+//
+//        Firestore.firestore().collection("post").document(post.postId).updateData(["liked": false ])
+        
+        Firestore.firestore().collection("tweets").document(tweet.tweetID).collection("post-likes").document(uid).delete { _ in
+            
+            Firestore.firestore().collection("user").document(uid).collection("user-likes").document(tweet.tweetID).delete { error in
+                completion(error)
+            }
+        }
+    }
+    
+    static func checkTweetIfLiked(tweet: Tweet , completion : @escaping (Bool)->()) {
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        Firestore.firestore().collection("user").document(uid).collection("user-likes").document(tweet.tweetID).getDocument { documentSnapshot, error in
+            guard let isLiked = documentSnapshot?.exists else { return }
+            
+            completion(isLiked)
+        }
+    }
 }

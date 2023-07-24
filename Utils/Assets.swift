@@ -12,6 +12,7 @@ enum Assets: String {
     case retweet
     case like
     case share
+    case like_filled
     case mail            = "ic_mail_outline_white_2x-1"
     case twitterLogoBlue = "twitter_logo_blue"
     case new_tweet       = "new_tweet"

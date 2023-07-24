@@ -8,19 +8,29 @@ import FirebaseAuth
 import FirebaseFirestore
 
 class TweetViewModel {
-    var tweet  : Tweet
-    var replies =  [Reply]()
-    var callBack: (()->())?
+    
+    //MARK: - Properties
+    var replies     = [Tweet]()
     var selectedUser: User?
+    var tweet       : Tweet
+    var callBack    : (()->())?
 
     init(tweet: Tweet) {
         self.tweet = tweet
+        checkTweetIfLiked()
         fetchReplies()
         fetchSelectedUser()
     }
     
     var user   : User   { selectedUser ?? User(dictionary: [:]) }
     var tweetID: String { tweet.tweetID }
+    
+    func checkTweetIfLiked() {
+        TweetService.checkTweetIfLiked(tweet: tweet) { isLiked in
+            print(isLiked)
+            self.tweet.liked = isLiked
+        }
+    }
     
     func fetchSelectedUser() {
         UserService.fetchSelectedUser(userUid: tweet.ownerUID) { user in

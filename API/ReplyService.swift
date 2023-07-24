@@ -14,12 +14,12 @@ class ReplyService {
                             completion: @escaping (Error?)->()) {
         
         let data: [String:Any] = [
-            "comment"            : comments,
-            "timestamp"          : Timestamp(date: Date()),
-            "userUid"            : user.uid,
-            "username"           : user.username,
-            "userProfileImageUrl": user.profilimage,
-            "fullName"           : user.fullname
+            "text"               : comments,
+            "time"               : Timestamp(date: Date()),
+            "ownerUID"           : user.uid,
+            "ownerUserName"           : user.username,
+            "ownerProfilImageUrl"     : user.profilimage,
+            "ownerFullName"           : user.fullname
         ]
         
         Firestore.firestore().collection("tweets")
@@ -30,17 +30,18 @@ class ReplyService {
             }
     }
     
-    static func fetchReplies(tweetID: String,completion: @escaping (([Reply])->())) {
+    static func fetchReplies(tweetID: String,
+                             completion: @escaping (([Tweet])->())) {
         Firestore.firestore()
             .collection("tweets")
             .document(tweetID).collection("comments")
-            .order(by: "timestamp", descending: false)
+            .order(by: "time", descending: false)
             .getDocuments { querySnapshot, error in
                 guard let documents = querySnapshot?.documents else { return }
                 
                 let comments = documents.map { queryDocumentSnapshot in
                     let dictionary = queryDocumentSnapshot.data()
-                    return Reply(dictionary: dictionary)
+                    return Tweet(tweetID: tweetID, dictionary: dictionary)
                 }
                 completion(comments)
             }

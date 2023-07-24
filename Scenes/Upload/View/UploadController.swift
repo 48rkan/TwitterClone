@@ -6,6 +6,7 @@ import UIKit
 
 protocol UploadControllerDelegate: AnyObject {
     func controller(_ postUpdateDidComplete: UIViewController)
+    func controller(_ reloadCollection: UploadController)
 }
 
 class UploadController: UIViewController {
@@ -84,6 +85,7 @@ class UploadController: UIViewController {
                                      tweetID: tweet.tweetID,
                                      user: viewModel.user) { error in
                 print(error)
+                self.delegate?.controller(self)
             }
             
         }

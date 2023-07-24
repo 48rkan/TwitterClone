@@ -26,6 +26,11 @@ class FeedController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        
+        viewModel.reloadCallBack = {
+            self.collection.reloadData()
+            self.showLoader(false)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,12 +50,7 @@ extension FeedController {
     private func configureUI() {
         view.backgroundColor = .white
         navigationController?.navigationBar.backgroundColor = .white
-        
-        viewModel.reloadCallBack = {
-            self.collection.reloadData()
-            self.showLoader(false)
-        }
-        
+    
         configNavigationBarItems()
         configConstraints()
     }
@@ -132,21 +132,20 @@ extension FeedController: FeedCellDelegate {
         present(nav, animated: true)
     }
     
-    
-    
-//    func cell(wantsToReplies: FeedCell, uid: String) {
-//        guard let tweet = wantsToReplies.viewModel?.items else { return }
-//        let controller = UploadController(viewModel: UploadViewModel(configuration: .replies(tweet)))
-//
-//        let nav = UINavigationController(rootViewController: controller)
-//        nav.modalPresentationStyle = .fullScreen
-//        present(nav, animated: true)
-//    }
-//
-//    func cell(wantsToShowProfileScene: FeedCell, ownerUid: String) {
-//        viewModel.fetchSelectedUser(userUid: ownerUid) { user in
-//            let controller = ProfileController(viewModel: ProfileViewModel(user: user))
-//            self.navigationController?.show(controller, sender: nil)
-//        }
-//    }
+    func cell(wantsToLikes: FeedCell, item: inout Tweet) {
+
+        item.liked.toggle()
+
+        if item.liked {
+            wantsToLikes.likeButton.setImage(Assets.like_filled.image(), for: .normal)
+            wantsToLikes.likeButton.tintColor = .red
+            
+            TweetService.likeTweet(tweet: item) { _ in }
+        } else {
+            wantsToLikes.likeButton.setImage(Assets.like_unselected.image(), for: .normal)
+            
+            TweetService.unLikeTweet(tweet: item) { _ in }
+        }
+        
+    }
 }

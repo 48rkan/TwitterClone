@@ -98,6 +98,16 @@ extension TweetController: UICollectionViewDelegateFlowLayout {
 
 //MARK: - TweetHeaderDelegate
 extension TweetController: TweetHeaderDelegate {
+    func wantsToReplies(_ header: TweetHeader) {
+        guard let tweet = header.viewModel?.tweet else { return  }
+        
+        let controller = UploadController(viewModel: UploadViewModel(configuration: .replies(tweet)))
+        controller.delegate = self
+        let nav = UINavigationController(rootViewController: controller)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
+    }
+    
     func showActionLauncher() {
         actionSheetLauncher.show()
     }
@@ -117,4 +127,15 @@ extension TweetController: ActionSheetLauncherDelegate {
             print("report called")
         }
     }
+}
+
+extension TweetController: UploadControllerDelegate {
+    func controller(_ postUpdateDidComplete: UIViewController) { }
+    
+    func controller(_ reloadCollection: UploadController) {
+        viewModel.fetchReplies()
+        self.collection.reloadData()
+    }
+    
+    
 }

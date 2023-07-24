@@ -25,11 +25,13 @@ struct Reply {
     }
 }
 
-extension Reply: FeedCellProtocol  {
-    var profileImageURL: String    { userProfileImageUrl }
-    var ownerUID       : String    { userUid           }
-    var userName       : String    { username        }
-    var times          : Timestamp { timestamp     }
-    var text           : String    { comment     }
-    var tweetID        : String    { ""        }
+extension Reply  {
+//    var profileImageURL: String    { userProfileImageUrl }
+//    var ownerUID       : String    { userUid           }
+//    var userName       : String    { username        }
+//    var times          : Timestamp { timestamp     }
+//    var text           : String    { comment     }
+//    var tweetID        : String    { ""        }
+//    var isLiked: Bool { false }
+
 }

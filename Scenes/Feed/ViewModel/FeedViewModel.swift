@@ -10,6 +10,7 @@ class FeedViewModel {
     var profilimage   : String?
     var callBack      : (()->())?
     var reloadCallBack: (()->())?
+    
     var isCurrentUser : Bool?
     
     init() {
@@ -32,7 +33,7 @@ class FeedViewModel {
             self.reloadCallBack?()
         }
     }
-    
+        
     func fetchSelectedUser(userUid: String,completion: @escaping (User)->()) {
         UserService.fetchSelectedUser(userUid: userUid) { user in
             completion(user)

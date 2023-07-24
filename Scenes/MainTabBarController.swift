@@ -99,10 +99,11 @@ extension MainTabBarController {
 
 //MARK: - UploadControllerDelegate
 extension MainTabBarController: UploadControllerDelegate {
+    func controller(_ reloadCollection: UploadController) { }
+    
     func controller(_ postUpdateDidComplete: UIViewController) {
         guard let container = viewControllers?.first as? ContainerViewController else { return }
         container.viewModel.feedVC.viewModel.fetchAllTweets()
-    
         selectedIndex = 0
     }
 }

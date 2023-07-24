@@ -5,9 +5,13 @@
 
 import UIKit
 
-
 protocol TweetHeaderDelegate: AnyObject {
     func showActionLauncher()
+    func wantsToReplies(_ header: TweetHeader)
+}
+
+extension TweetHeaderDelegate {
+    func showActionLauncher() { }
 }
 
 class TweetHeader: UICollectionReusableView {
@@ -16,9 +20,7 @@ class TweetHeader: UICollectionReusableView {
     weak var delegate: TweetHeaderDelegate?
     
     var viewModel: TweetHeaderViewModel? {
-        didSet {
-            configure()
-        }
+        didSet { configure() }
     }
     
     private let profileImageView: UIImageView = {
@@ -35,7 +37,6 @@ class TweetHeader: UICollectionReusableView {
                             size      : 16,
                             systemfont: UIFont.boldSystemFont(ofSize: 16),
                             alignment : .left)
-        
         return l
     }()
     
@@ -70,6 +71,7 @@ class TweetHeader: UICollectionReusableView {
         b.setImage(Assets.downArrow.image(), for: .normal)
         b.addTarget(self, action: #selector(tappedOptionsButton), for: .touchUpInside)
         b.tintColor = .lightGray
+        
         return b
     }()
     
@@ -101,6 +103,7 @@ class TweetHeader: UICollectionReusableView {
                        tintColor: .lightGray,
                        height   : 20,
                        width    : 20)
+        b.addTarget(self, action: #selector(tappedCommentButton), for: .touchUpInside)
         return b
     }()
     
@@ -140,9 +143,10 @@ class TweetHeader: UICollectionReusableView {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
     
     //MARK: - Actions
-    @objc func tappedOptionsButton() {
-        print("h")
-        delegate?.showActionLauncher()
+    @objc func tappedOptionsButton() { delegate?.showActionLauncher() }
+    
+    @objc func tappedCommentButton() {
+        delegate?.wantsToReplies(self)
     }
     
     func configure() {
@@ -152,6 +156,9 @@ class TweetHeader: UICollectionReusableView {
         dateLabel.text     = viewModel.time
         captionLabel.text  = viewModel.caption
         profileImageView.setImage(stringURL: viewModel.profileImage)
+        
+        likeButton.setImage(viewModel.buttonImage, for: .normal)
+        likeButton.tintColor = viewModel.buttonTintColor
     }
 }
 

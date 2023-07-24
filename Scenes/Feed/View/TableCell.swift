@@ -22,7 +22,6 @@ class TableCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let l = UILabel()
-        l.text = "ZZZ"
         
         return l
     }()
