@@ -20,11 +20,7 @@ class TableCell: UITableViewCell {
         return iv
     }()
     
-    private let titleLabel: UILabel = {
-        let l = UILabel()
-        
-        return l
-    }()
+    private let titleLabel = UILabel()
     
     //MARK: - Lifecycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

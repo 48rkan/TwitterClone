@@ -9,6 +9,8 @@ class ExploreController: UIViewController {
     //MARK: - Lifecycle
     var viewModel = ExploreViewModel()
     
+    var workItem: DispatchWorkItem?
+    
     private lazy var table: UITableView = {
         let t = UITableView()
         t.register(SearchCell.self, forCellReuseIdentifier: "\(SearchCell.self)")
@@ -16,6 +18,7 @@ class ExploreController: UIViewController {
         t.delegate       = self
         t.dataSource     = self
         t.separatorStyle = .none
+        let queue = DispatchQueue(label: "aa",attributes: .concurrent)
         return t
     }()
     
@@ -98,14 +101,21 @@ extension ExploreController: UITableViewDataSource {
 //MARK: - UISearchResultsUpdating
 extension ExploreController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
+        workItem?.cancel()
+        
         guard let searchText = searchController.searchBar.text?.lowercased() else { return }
-        print(searchText)
-        
-        viewModel.filteredUsers = viewModel.users.filter({ user in
-            user.fullname.contains(searchText) || user.username.contains(searchText)
-        })
-        
-        table.reloadData()
-    }
 
+        let newWorkItem = DispatchWorkItem {
+    
+            self.viewModel.filteredUsers = self.viewModel.users.filter({ user in
+                user.fullname.contains(searchText) || user.username.contains(searchText)
+            })
+
+            DispatchQueue.main.async { self.table.reloadData() }
+        }
+        
+        workItem = newWorkItem
+        DispatchQueue.global().asyncAfter(wallDeadline: .now() + 1, execute: newWorkItem)
+        
+    }
 }

@@ -85,18 +85,20 @@ class UploadController: UIViewController {
                                      tweetID: tweet.tweetID,
                                      user: viewModel.user) { error in
                 print(error)
+                guard let user = AccountService.instance.currentUser else { return }
+                NotificationService.uploadNotification(notificationOwnerUid: tweet.ownerUID,
+                                                       fromUser: user,
+                                                       notificationtype: .reply,
+                                                       tweet: tweet)
                 self.delegate?.controller(self)
             }
-            
         }
-        
         dismiss(animated: true)
     }
 }
 
 //MARK: - Helpers
 extension UploadController {
-    
     private func configureUI() {
         view.backgroundColor = .white
  
@@ -104,7 +106,6 @@ extension UploadController {
         view.addSubview(mainStack)
         mainStack.axis         = .horizontal
         mainStack.distribution = .fill
-        
         
         mainStack.anchor(top: view.safeAreaLayoutGuide.topAnchor,
                      left: view.leftAnchor,
@@ -119,7 +120,6 @@ extension UploadController {
         
         guard let isHidden  = viewModel.shouldShowReplyLabel else { return }
         replyLabel.isHidden = !isHidden
-//        replyLabel.isHidden = true
     }
 
     private func configNavigationBar() {

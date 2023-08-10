@@ -5,7 +5,7 @@
 import UIKit
 
 class MenuViewModel {
-    var user: User?
+    var user    : User?
     var callBack: (()->())?
     
     init() {

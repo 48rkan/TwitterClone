@@ -121,6 +121,13 @@ extension ProfileController: ProfileHeaderDelegate {
                 self.viewModel.user.isFollowing = true
                 self.collection.reloadData()
             }
+            
+            guard let user = AccountService.instance.currentUser else { return }
+
+            print(viewModel.user.uid)
+            NotificationService.uploadNotification(notificationOwnerUid: viewModel.user.uid,
+                                                   fromUser: user,
+                                                   notificationtype: .follow)
         }
     }
 }

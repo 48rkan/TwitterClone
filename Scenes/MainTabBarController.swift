@@ -103,7 +103,9 @@ extension MainTabBarController: UploadControllerDelegate {
     
     func controller(_ postUpdateDidComplete: UIViewController) {
         guard let container = viewControllers?.first as? ContainerViewController else { return }
-        container.viewModel.feedVC.viewModel.fetchAllTweets()
+//        container.viewModel.feedVC.viewModel.fetchAllTweets {
+//            print("")
+//        }
         selectedIndex = 0
     }
 }

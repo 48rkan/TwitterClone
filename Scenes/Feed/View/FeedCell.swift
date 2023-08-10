@@ -142,10 +142,11 @@ extension FeedCell {
         
         captionLabel.text = viewModel.items.text
         
-        viewModel.callBack = {
-            self.likeButton.setImage(viewModel.buttonImage, for: .normal)
-            self.likeButton.tintColor = viewModel.buttonTintColor
-        }
+        print(viewModel.items.liked)
+        
+        likeButton.setImage(viewModel.buttonImage, for: .normal)
+        likeButton.tintColor = viewModel.buttonTintColor
+       
 
         profileImageView.setImage(stringURL: viewModel.items.ownerProfilImageUrl)
         

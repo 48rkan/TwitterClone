@@ -8,7 +8,7 @@ import FirebaseFirestore
 struct Tweet {
     let tweetID            : String
     var text               : String
-    let likes              : Int
+    var likes              : Int
     let retweets           : Int
     let time               : Timestamp
     let ownerUID           : String

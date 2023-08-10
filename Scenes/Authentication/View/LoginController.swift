@@ -51,7 +51,7 @@ class LoginController: UIViewController {
     
     //MARK: - Actions
     @objc func tappedGoRegister() {
-        print("tappedAccountButton ")
+//        print("tappedAccountButton ")
         let controller = RegisterController()
         navigationController?.show(controller, sender: nil)
     }

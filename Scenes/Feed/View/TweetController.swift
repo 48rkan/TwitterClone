@@ -1,4 +1,3 @@
-//
 //  TweetController.swift
 //  TwitterClone
 //  Created by Erkan Emir on 12.07.23.
@@ -16,7 +15,6 @@ class TweetController: UIViewController {
         c.dataSource = self
         c.register(TweetHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "\(TweetHeader.self)")
         c.register(FeedCell.self, forCellWithReuseIdentifier: "\(FeedCell.self)")
-        
         return c
     }()
         
@@ -40,14 +38,14 @@ class TweetController: UIViewController {
         configureUI()
         viewModel.callBack = { self.collection.reloadData() }
     }
-    
-    //MARK: - Actions
 }
 
 //MARK: - Helpers
 extension TweetController {
     func configureUI() {
         view.backgroundColor = .white
+        navigationItem.title = "Detail"
+        navigationController?.navigationBar.tintColor = .black
         
         view.addSubview(collection)
         collection.anchor(top: view.safeAreaLayoutGuide.topAnchor,
@@ -76,7 +74,7 @@ extension TweetController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collection.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "\(TweetHeader.self)", for: indexPath) as! TweetHeader
-        header.delegate = self
+        header.delegate  = self
         header.viewModel = TweetHeaderViewModel(tweet: viewModel.tweet)
         return header
     }
@@ -87,7 +85,6 @@ extension TweetController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let height = dynamicHeightCalculator(text: viewModel.tweet.text,
                                              width: view.frame.width) + 240
-        
         return CGSize(width: view.frame.width, height: height)
     }
     
@@ -98,8 +95,26 @@ extension TweetController: UICollectionViewDelegateFlowLayout {
 
 //MARK: - TweetHeaderDelegate
 extension TweetController: TweetHeaderDelegate {
+    func wantsToLikeOrUnlike(_ header: TweetHeader, tweet: Tweet) {
+        var tweet = tweet
+        tweet.liked.toggle()
+        
+        if tweet.liked {
+            header.likeButton.setImage(Assets.like_filled.image(), for: .normal)
+            header.likeButton.tintColor = .red
+            TweetService.likeTweet(tweet: tweet) { _ in
+                self.viewModel.checkTweetIfLiked(tweet: tweet)
+            }
+        } else {
+            header.likeButton.setImage(Assets.like_unselected.image(), for: .normal)
+            TweetService.unLikeTweet(tweet: tweet) { _ in
+                self.viewModel.checkTweetIfLiked(tweet: tweet)
+            }
+        }
+    }
+        
     func wantsToReplies(_ header: TweetHeader) {
-        guard let tweet = header.viewModel?.tweet else { return  }
+        guard let tweet = header.viewModel?.tweet else { return }
         
         let controller = UploadController(viewModel: UploadViewModel(configuration: .replies(tweet)))
         controller.delegate = self
@@ -108,9 +123,7 @@ extension TweetController: TweetHeaderDelegate {
         present(nav, animated: true)
     }
     
-    func showActionLauncher() {
-        actionSheetLauncher.show()
-    }
+    func showActionLauncher() { actionSheetLauncher.show() }
 }
 
 //MARK: - ActionSheetLauncherDelegate
@@ -129,6 +142,7 @@ extension TweetController: ActionSheetLauncherDelegate {
     }
 }
 
+//MARK: - UploadControllerDelegate
 extension TweetController: UploadControllerDelegate {
     func controller(_ postUpdateDidComplete: UIViewController) { }
     
@@ -136,6 +150,4 @@ extension TweetController: UploadControllerDelegate {
         viewModel.fetchReplies()
         self.collection.reloadData()
     }
-    
-    
 }

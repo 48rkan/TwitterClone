@@ -61,18 +61,32 @@ struct TweetService {
             }
     }
     
+    static func fetchSelectedTweet(tweetID: String,completion: @escaping (Tweet)->()) {
+        Firestore.firestore()
+            .collection("tweets")
+            .document(tweetID)
+            .getDocument { snapshot, error in
+                guard let snapshot   = snapshot else { return }
+                guard let dictionary = snapshot.data() else { return }
+                completion(Tweet(tweetID: snapshot.documentID, dictionary: dictionary))
+            }
+    }
+    
     static func deleteTweet(tweetID: String) {
         Firestore.firestore().collection("tweets").document(tweetID).delete()
     }
     
+    static func fetchTweetsLikesCount(tweetID: String,completion: @escaping (Int)->()) {
+        Firestore.firestore().collection("tweets").document(tweetID).collection("post-likes").getDocuments { querySnaphot, _ in
+            guard let count = querySnaphot?.count else { return }
+            completion(count)
+        }
+    }
     
     static func likeTweet(tweet: Tweet , completion: @escaping (Error?)->()) {
-        
+
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-// Firestore.firestore().collection("post").document(tweet.tweetID).updateData(["likes": tweet.likes + 1 ])
-//        Firestore.firestore().collection("post").document(tweet.tweetID).updateData(["liked": true ])
-//
+
         Firestore.firestore().collection("tweets").document(tweet.tweetID).collection("post-likes").document(uid).setData([:]) { _ in
             
             Firestore.firestore().collection("user").document(uid).collection("user-likes").document(tweet.tweetID).setData([:]) { error in
@@ -84,11 +98,6 @@ struct TweetService {
     static func unLikeTweet(tweet: Tweet , completion: @escaping (Error?)->()) {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-//        //condition qoyulmalidi 0 dan boyuk olsun
-//        Firestore.firestore().collection("post").document(post.postId).updateData(["likes": post.likes - 1 ])
-//
-//        Firestore.firestore().collection("post").document(post.postId).updateData(["liked": false ])
         
         Firestore.firestore().collection("tweets").document(tweet.tweetID).collection("post-likes").document(uid).delete { _ in
             

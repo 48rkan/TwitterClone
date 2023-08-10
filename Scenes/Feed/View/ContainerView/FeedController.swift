@@ -38,6 +38,10 @@ class FeedController: UIViewController {
         navigationController?.navigationBar.isHidden      = false
         navigationController?.navigationBar.barStyle      = .default
         navigationController?.navigationBar.isTranslucent = false
+        
+//        viewModel.fetchAllTweets {
+//            print("")
+//        }
     }
     
     @objc func tappedMenuButton() {
@@ -101,6 +105,7 @@ extension FeedController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collection.dequeueReusableCell(withReuseIdentifier: "\(FeedCell.self)", for: indexPath) as! FeedCell
         cell.delegate  = self
+        print(viewModel.tweets[indexPath.row].liked)
         cell.viewModel = FeedCellViewModel(items: viewModel.tweets[indexPath.row])
         return cell
     }
@@ -141,11 +146,14 @@ extension FeedController: FeedCellDelegate {
             wantsToLikes.likeButton.tintColor = .red
             
             TweetService.likeTweet(tweet: item) { _ in }
+            
+            guard let user = AccountService.instance.currentUser else { return }
+            
+            NotificationService.uploadNotification(notificationOwnerUid: item.ownerUID, fromUser: user, notificationtype: .like,tweet: item)
         } else {
             wantsToLikes.likeButton.setImage(Assets.like_unselected.image(), for: .normal)
             
             TweetService.unLikeTweet(tweet: item) { _ in }
         }
-        
     }
 }

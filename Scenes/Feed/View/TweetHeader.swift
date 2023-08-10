@@ -1,4 +1,3 @@
-//
 //  TweetHeader.swift
 //  TwitterClone
 //  Created by Erkan Emir on 12.07.23.
@@ -8,10 +7,7 @@ import UIKit
 protocol TweetHeaderDelegate: AnyObject {
     func showActionLauncher()
     func wantsToReplies(_ header: TweetHeader)
-}
-
-extension TweetHeaderDelegate {
-    func showActionLauncher() { }
+    func wantsToLikeOrUnlike(_ header: TweetHeader, tweet: Tweet)
 }
 
 class TweetHeader: UICollectionReusableView {
@@ -86,14 +82,15 @@ class TweetHeader: UICollectionReusableView {
         return l
     }()
     
-    private let likesLabel: UILabel = {
+    private lazy var likesLabel: UILabel = {
         let l  = UILabel()
-        l.setDetailedLabelConfiguration(text1     : "0",
-                                        text1Font : UIFont.boldSystemFont(ofSize: 14),
-                                        text1Color: .black,
-                                        text2     : " likes",
-                                        text2Font : UIFont.systemFont(ofSize: 14),
-                                        text2Color: .lightGray)
+//        l.setDetailedLabelConfiguration(text1     : "0",
+//                                        text1Font : UIFont.boldSystemFont(ofSize: 14),
+//                                        text1Color: .black,
+//                                        text2     : " likes",
+//                                        text2Font : UIFont.systemFont(ofSize: 14),
+//                                        text2Color: .lightGray)
+        
         return l
     }()
         
@@ -116,12 +113,13 @@ class TweetHeader: UICollectionReusableView {
         return b
     }()
     
-    private lazy var likeButton: UIButton = {
+    lazy var likeButton: UIButton = {
         let b = UIButton()
         b.createButton(image    : Assets.like.rawValue,
                        tintColor: .lightGray,
                        height   : 20,
                        width    : 20)
+        b.addTarget(self, action: #selector(tappedLikedButton), for: .touchUpInside)
         return b
     }()
     
@@ -149,6 +147,11 @@ class TweetHeader: UICollectionReusableView {
         delegate?.wantsToReplies(self)
     }
     
+    @objc func tappedLikedButton() {
+        guard let viewModel else { return }
+        delegate?.wantsToLikeOrUnlike(self, tweet: viewModel.tweet)
+    }
+    
     func configure() {
         guard let viewModel else { return }
         fullNameLabel.text = viewModel.fullNameLabel
@@ -159,6 +162,13 @@ class TweetHeader: UICollectionReusableView {
         
         likeButton.setImage(viewModel.buttonImage, for: .normal)
         likeButton.tintColor = viewModel.buttonTintColor
+        
+        likesLabel.setDetailedLabelConfiguration(text1     : "\(viewModel.likes)",
+                                        text1Font : UIFont.boldSystemFont(ofSize: 14),
+                                        text1Color: .black,
+                                        text2     : " likes",
+                                        text2Font : UIFont.systemFont(ofSize: 14),
+                                        text2Color: .lightGray)
     }
 }
 

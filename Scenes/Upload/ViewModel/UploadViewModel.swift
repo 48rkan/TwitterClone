@@ -11,14 +11,14 @@ enum UploadViewConfiguration {
 }
 
 class UploadViewModel {
-    
+    //MARK: - Properties
     var buttonTitle         : String?
     var placeHolderText     : String?
     var shouldShowReplyLabel: Bool?
     var replyText           : String?
-    
     var configuration       : UploadViewConfiguration
 
+    //MARK: - Lifecycle
     init(configuration: UploadViewConfiguration) {
         self.configuration = configuration
         

@@ -1,4 +1,3 @@
-//
 //  TweetViewModel.swift
 //  TwitterClone
 //  Created by Erkan Emir on 12.07.23.
@@ -15,20 +14,26 @@ class TweetViewModel {
     var tweet       : Tweet
     var callBack    : (()->())?
 
+    //MARK: - Lifecycle
     init(tweet: Tweet) {
         self.tweet = tweet
-        checkTweetIfLiked()
+        checkTweetIfLiked(tweet: tweet)
+        fetchTweetsLikesCount(tweet: tweet)
         fetchReplies()
         fetchSelectedUser()
     }
     
-    var user   : User   { selectedUser ?? User(dictionary: [:]) }
-    var tweetID: String { tweet.tweetID }
-    
-    func checkTweetIfLiked() {
+    func checkTweetIfLiked(tweet: Tweet) {
         TweetService.checkTweetIfLiked(tweet: tweet) { isLiked in
-            print(isLiked)
             self.tweet.liked = isLiked
+            self.callBack?()
+        }
+    }
+    
+    func fetchTweetsLikesCount(tweet: Tweet) {
+        TweetService.fetchTweetsLikesCount(tweetID: tweet.tweetID) { count in
+            print(count)
+            self.tweet.likes = count
         }
     }
     
@@ -48,4 +53,9 @@ class TweetViewModel {
             self.callBack?()
         }
     }
+}
+
+extension TweetViewModel {
+    var user   : User   { selectedUser ?? User(dictionary: [:]) }
+    var tweetID: String { tweet.tweetID }
 }
