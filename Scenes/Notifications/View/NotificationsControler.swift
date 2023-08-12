@@ -21,14 +21,10 @@ class NotificationsControler: UIViewController {
     }()
     
     //MARK: - Lifecycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureUI()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = false
-        
+        configureUI()
+
         viewModel.successCallBack = { self.table.reloadData() }
     }
     
@@ -48,16 +44,16 @@ class NotificationsControler: UIViewController {
 //MARK: - UITableViewDelegate
 extension NotificationsControler: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch viewModel.notifications[indexPath.row].type {
+        let notification = viewModel.notifications[indexPath.row]
+
+        switch notification.type {
         case .follow:
-            let notification = viewModel.notifications[indexPath.row]
 
             viewModel.fetchSelectedUser(userUid: notification.uid) { user in
                 let controller = ProfileController(viewModel: ProfileViewModel(user: user))
                 self.navigationController?.show(controller, sender: nil)
             }
         case _:
-            let notification = viewModel.notifications[indexPath.row]
             guard let postId = notification.postId else { return }
             
             TweetService.fetchSelectedTweet(tweetID: postId) { tweet in
@@ -65,7 +61,6 @@ extension NotificationsControler: UITableViewDelegate {
                 self.navigationController?.show(controller, sender: nil)
             }
         }
-   
     }
 }
 
@@ -91,7 +86,6 @@ extension NotificationsControler: NotificationCellDelegate {
             self.showLoader(false)
             cell.viewModel?.notification.userIsFollowed.toggle()
             self.viewModel.checkIfUserIsFollowed()
-
         }
     }
     
@@ -101,7 +95,6 @@ extension NotificationsControler: NotificationCellDelegate {
             self.showLoader(false)
             cell.viewModel?.notification.userIsFollowed.toggle()
             self.viewModel.checkIfUserIsFollowed()
-
         }
     }
     
