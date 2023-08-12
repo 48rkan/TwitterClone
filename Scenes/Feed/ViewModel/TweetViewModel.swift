@@ -32,7 +32,6 @@ class TweetViewModel {
     
     func fetchTweetsLikesCount(tweet: Tweet) {
         TweetService.fetchTweetsLikesCount(tweetID: tweet.tweetID) { count in
-            print(count)
             self.tweet.likes = count
         }
     }

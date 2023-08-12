@@ -6,6 +6,9 @@ import UIKit
 
 protocol NotificationCellDelegate: AnyObject {
     func didTapProfile(_ cell: NotificationCell)
+
+    func cell(_ cell:NotificationCell, wantsToFollow      uid: String)
+    func cell(_ cell:NotificationCell, wantsToUnFollow    uid: String)
 }
 
 class NotificationCell: UITableViewCell {
@@ -26,23 +29,39 @@ class NotificationCell: UITableViewCell {
     
     private let infoLabel = UILabel()
     
-    private let follorOrUnfollowButton: UIButton = {
+    lazy var followOrUnfollowButton: UIButton = {
         let b = UIButton()
-        b.backgroundColor = .blue
-//        b.setTitle("Follow", for: .normal)
-//
+        b.setTitleColor(.twitterBlue, for: .normal)
+        b.backgroundColor   = .white
+        b.layer.borderColor = UIColor.twitterBlue.cgColor
+        b.layer.borderWidth = 2
+        b.titleLabel?.font  = UIFont.boldSystemFont(ofSize: 12)
+        b.addTarget(self, action: #selector(tappedFollowButton), for: .touchUpInside)
         return b
     }()
     
     //MARK: - Lifecycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureUI()
-        
-        viewModel?.callBack = { self.configure() }
+        configureUI()        
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
+
+    //MARK: - Actions
+    @objc func tappedProfileImageView() {
+        delegate?.didTapProfile(self)
+    }
+     
+    @objc func tappedFollowButton() {
+        guard let viewModel = viewModel else { return }
+
+        if viewModel.notification.userIsFollowed {
+            delegate?.cell(self, wantsToUnFollow: viewModel.notification.uid)
+        } else {
+            delegate?.cell(self, wantsToFollow: viewModel.notification.uid)
+        }
+    }
     
     //MARK: - Helpers
     func configureUI() {
@@ -54,23 +73,18 @@ class NotificationCell: UITableViewCell {
         profileImageView.clipsToBounds      = true
         profileImageView.layer.cornerRadius = 20
         
-        contentView.addSubview(follorOrUnfollowButton)
-        follorOrUnfollowButton.anchor(top: contentView.topAnchor,
+        contentView.addSubview(followOrUnfollowButton)
+        followOrUnfollowButton.anchor(top: contentView.topAnchor,
                                       bottom: contentView.bottomAnchor,
                                       right: contentView.rightAnchor,
                                       paddingTop: 12,paddingBottom: 12,paddingRight: 4)
-        follorOrUnfollowButton.setDimensions(height: 20, width: 60)
-        follorOrUnfollowButton.isHidden = true
-
+        followOrUnfollowButton.setDimensions(height: 32, width: 80)
+        followOrUnfollowButton.isHidden = true
+        followOrUnfollowButton.layer.cornerRadius = 16
 
         contentView.addSubview(infoLabel)
         infoLabel.centerY(inView: self,leftAnchor: profileImageView.rightAnchor,paddingLeft: 8)
-        infoLabel.anchor(right: follorOrUnfollowButton.leftAnchor,paddingRight: 4)
-    }
-    
-    //MARK: - Actions
-    @objc func tappedProfileImageView() {
-        delegate?.didTapProfile(self)
+        infoLabel.anchor(right: followOrUnfollowButton.leftAnchor,paddingRight: 4)
     }
     
     func configure() {
@@ -87,15 +101,10 @@ class NotificationCell: UITableViewCell {
                                                 text3: "\(viewModel.time)",
                                                 text3Font: UIFont.systemFont(ofSize: 12),
                                                 text3Color: .lightGray)
-        if viewModel.notification.userIsFollowed  {
-            follorOrUnfollowButton.setTitle("aa", for: .normal)
-        } else {
-            follorOrUnfollowButton.setTitle("bb", for: .normal)
-        }
-
-//        follorOrUnfollowButton.setTitle(viewModel.buttonText, for: .normal)
         
+        followOrUnfollowButton.setTitle(viewModel.buttonText, for: .normal)
+
         guard viewModel.shouldHide else { return }
-        follorOrUnfollowButton.isHidden = false
+        followOrUnfollowButton.isHidden = false
     }
 }

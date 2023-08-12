@@ -28,6 +28,8 @@ class NotificationsControler: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = false
+        
+        viewModel.successCallBack = { self.table.reloadData() }
     }
     
     func configureUI() {
@@ -46,13 +48,24 @@ class NotificationsControler: UIViewController {
 //MARK: - UITableViewDelegate
 extension NotificationsControler: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let notification = viewModel.notifications[indexPath.row]
-        guard let postId = notification.postId else { return }
-        
-        TweetService.fetchSelectedTweet(tweetID: postId) { tweet in
-            let controller = TweetController(viewModel: TweetViewModel(tweet: tweet))
-            self.navigationController?.show(controller, sender: nil)
+        switch viewModel.notifications[indexPath.row].type {
+        case .follow:
+            let notification = viewModel.notifications[indexPath.row]
+
+            viewModel.fetchSelectedUser(userUid: notification.uid) { user in
+                let controller = ProfileController(viewModel: ProfileViewModel(user: user))
+                self.navigationController?.show(controller, sender: nil)
+            }
+        case _:
+            let notification = viewModel.notifications[indexPath.row]
+            guard let postId = notification.postId else { return }
+            
+            TweetService.fetchSelectedTweet(tweetID: postId) { tweet in
+                let controller = TweetController(viewModel: TweetViewModel(tweet: tweet))
+                self.navigationController?.show(controller, sender: nil)
+            }
         }
+   
     }
 }
 
@@ -72,6 +85,26 @@ extension NotificationsControler: UITableViewDataSource {
 
 //MARK: - NotificationCellDelegate
 extension NotificationsControler: NotificationCellDelegate {
+    func cell(_ cell: NotificationCell, wantsToFollow uid: String) {
+        showLoader(true)
+        UserService.follow(uid: uid) { _ in
+            self.showLoader(false)
+            cell.viewModel?.notification.userIsFollowed.toggle()
+            self.viewModel.checkIfUserIsFollowed()
+
+        }
+    }
+    
+    func cell(_ cell: NotificationCell, wantsToUnFollow uid: String) {
+        showLoader(true)
+        UserService.unfollow(uid: uid) { _ in
+            self.showLoader(false)
+            cell.viewModel?.notification.userIsFollowed.toggle()
+            self.viewModel.checkIfUserIsFollowed()
+
+        }
+    }
+    
     func didTapProfile(_ cell: NotificationCell) {
         guard let uid = cell.viewModel?.notification.uid else { return }
         UserService.fetchSelectedUser(userUid: uid) { user in

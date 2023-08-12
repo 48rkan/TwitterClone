@@ -96,8 +96,6 @@ class ActionSheetLauncher: NSObject {
 //MARK: - UITableViewDelegate
 extension ActionSheetLauncher: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath.item)
-        print(viewModel.type[indexPath.row])
         delegate?.didSelect(viewModel.type[indexPath.row])
         handleDismissal()
     }
