@@ -35,6 +35,9 @@ class ProfileController: UIViewController {
         configureUI()
         
         viewModel.successCallBack = { self.collection.reloadData() }
+        
+        guard let tabBarHeight = tabBarController?.tabBar.frame.height else { return }
+        collection.contentInset.bottom = tabBarHeight
     }
     
     override func viewWillAppear(_ animated: Bool) {

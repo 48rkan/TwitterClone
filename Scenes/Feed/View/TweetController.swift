@@ -8,12 +8,12 @@ class TweetController: UIViewController {
     
     //MARK: - Properties
     var viewModel: TweetViewModel
-    
-    private lazy var collection: CustomCollectionView = {
-        let c = CustomCollectionView(scroll: .vertical,spacing: 4,
-                                     delegate: self,dataSource: self)
-        c.register(TweetHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "\(TweetHeader.self)")
-        c.register(FeedCell.self, forCellWithReuseIdentifier: "\(FeedCell.self)")
+
+    private lazy var collection: CustomCollectionView2 = {
+        let c = CustomCollectionView2(scroll: .vertical, spacing: 4,
+                                      delegate: self, dataSource: self,
+                                      registerCell  : FeedCell.self,
+                                      registerHeader: TweetHeader.self)
         return c
     }()
         
@@ -83,7 +83,7 @@ extension TweetController: UICollectionViewDataSource {
 extension TweetController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let height = dynamicHeightCalculator(text: viewModel.tweet.text,
-                                             width: view.frame.width) + 240
+                                             width: view.frame.width) + 260
         return CGSize(width: view.frame.width, height: height)
     }
     

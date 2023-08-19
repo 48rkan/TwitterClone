@@ -28,7 +28,7 @@ class CustomCollectionView: UICollectionView {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
     
     //MARK: - Helper
-    func configureCollectionView() {
+    private func configureCollectionView() {
         self.showsVerticalScrollIndicator   = false
         self.showsHorizontalScrollIndicator = false
     }
@@ -81,23 +81,13 @@ class CustomCollectionView2: UICollectionView {
     }
 }
 
-//
-//private lazy var collection: CustomCollectionView = {
-//    let c = CustomCollectionView(scroll: .vertical, spacing: 16)
-//
-//    c.register(FeedHeader.self,
-//               forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-//               withReuseIdentifier: "\(FeedHeader.self)")
-//    c.register(FeedFooter.self,
-//               forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-//               withReuseIdentifier: "\(FeedFooter.self)")
-//    c.register(FeedCell.self,
-//               forCellWithReuseIdentifier: "\(FeedCell.self)")
-//    c.delegate   = self
-//    c.dataSource = self
-//    c.contentInset.right  = 8
-//    c.contentInset.left   = 8
-//    c.backgroundColor = .white
-//
-//    return c
-//}()
+extension UICollectionView {
+    func configureContentInset(top: CGFloat,left: CGFloat,
+                               right: CGFloat,bottom: CGFloat) {
+        self.contentInset.top   = top
+        self.contentInset.left  = left
+        self.contentInset.right = right
+        self.contentInset.right = bottom
+
+    }
+}
