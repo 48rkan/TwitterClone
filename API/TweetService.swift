@@ -72,6 +72,32 @@ struct TweetService {
             }
     }
     
+    static func fetchSelectedlikeTweet(user: User , completion: @escaping ([Tweet])->()) {
+        var tweets = [Tweet]()
+
+        Firestore.firestore().collection("user").document(user.uid).collection("user-likes").getDocuments { query, _ in
+            query?.documents.forEach({ document in
+                
+                Firestore.firestore()
+                    .collection("tweets")
+                    .document(document.documentID)
+                    .getDocument { snapshot, error in
+                        guard let snapshot   = snapshot else { return }
+                        guard let dictionary = snapshot.data() else { return }
+                        
+                        var tweet = Tweet(tweetID: snapshot.documentID,
+                                          dictionary: dictionary)
+                        tweet.liked = true
+                        
+                        tweets.append(tweet)
+                    }
+            })
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            completion(tweets)
+        }
+    }
+    
     static func deleteTweet(tweetID: String) {
         Firestore.firestore().collection("tweets").document(tweetID).delete()
     }

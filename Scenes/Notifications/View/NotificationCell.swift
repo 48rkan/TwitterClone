@@ -46,6 +46,7 @@ class NotificationCell: UITableViewCell {
         configureUI()        
     }
     
+    
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
 
     //MARK: - Actions

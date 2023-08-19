@@ -8,16 +8,13 @@ class FilterCell: UICollectionViewCell {
     
     //MARK: - Properties
     var viewModel: FilterCellViewModel? {
-        didSet {
-            configure()
-        }
+        didSet { configure() }
     }
     
     private let titleLabel: UILabel = {
-        let l = UILabel()
-        l.text = "Test"
+        let l  = UILabel()
         l.font = UIFont.systemFont(ofSize: 14)
-        l.textColor = .lightGray
+        l.textColor     = .lightGray
         l.textAlignment = .center
         return l
     }()
@@ -36,20 +33,18 @@ class FilterCell: UICollectionViewCell {
         configureUI()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configure() {
-        titleLabel.text = viewModel?.item
-    }
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }
 }
 
 extension FilterCell {
     func configureUI() {
         backgroundColor = .white
-
+        
         addSubview(titleLabel)
         titleLabel.addConstraintsToFillView(self)
+    }
+    
+    func configure() {
+        titleLabel.text = viewModel?.item
     }
 }

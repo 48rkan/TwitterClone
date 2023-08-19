@@ -4,36 +4,71 @@
 
 import Foundation
 
-class ProfileViewModel {
+final class ProfileViewModel {
 
+    //MARK: - Properties
     var user: User
-    var tweets = [Tweet]()
-    var callBack: (()->())?
     
+    private var tweets      = [Tweet]()
+    private var likeTweets  = [Tweet]()
+    private var replyTweets = [Tweet]()
+    
+    var successCallBack: (()->())?
+    
+    var type: ProfileFilterOptions = .tweets {
+        didSet { self.successCallBack?() }
+    }
+    
+    var currentDataSource: [Tweet] {
+        switch type {
+        case .tweets : return tweets
+        case .replies: return replyTweets
+        case .likes  : return likeTweets
+        }
+    }
+        
+    //MARK: - Lifecycle
     init(user: User) {
         self.user = user
         fetchSelectedUserTweets()
         checkIfUserIsFollowed()
         fetchUserStatistic()
+        fetchLikes()
+        fetchReplies()
     }
     
-    func fetchSelectedUserTweets() {
-        TweetService.fetchSelectedUserTweets(userUid: user.uid) { tweets in
-            self.tweets = tweets
-            self.callBack?()
+    //MARK: - Methods
+    private func fetchLikes() {
+        TweetService.fetchSelectedlikeTweet(user: user) { tweets in
+            self.likeTweets = tweets
+            self.successCallBack?()
         }
     }
     
-    func checkIfUserIsFollowed() {
+    private func fetchReplies() {
+        ReplyService.fetchSelectedReplies(user: user) { tweets in
+            self.replyTweets = tweets
+            self.successCallBack?()
+        }
+    }
+    
+    private func fetchSelectedUserTweets() {
+        TweetService.fetchSelectedUserTweets(userUid: user.uid) { tweets in
+            self.tweets = tweets
+            self.successCallBack?()
+        }
+    }
+    
+    private func checkIfUserIsFollowed() {
         UserService.checkIfUserIsFollowed(uid: user.uid) { isExist in
             self.user.isFollowing = isExist
         }
     }
 
-    func fetchUserStatistic() {
+    private func fetchUserStatistic() {
         UserService.fetchUserStatistic(uid: user.uid) { currentStat in
             self.user.statistic = currentStat
-            self.callBack?()
+            self.successCallBack?()
         }
     }
 }

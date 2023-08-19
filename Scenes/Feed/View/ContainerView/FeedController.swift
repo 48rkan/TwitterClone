@@ -10,14 +10,14 @@ protocol FeedControllerDelegate: AnyObject {
 
 class FeedController: UIViewController {
     
+    //MARK: - Properties
     weak var delegate: FeedControllerDelegate?
     var viewModel    = FeedViewModel()
         
     private lazy var collection: CustomCollectionView = {
-        let c = CustomCollectionView(scroll: .vertical, spacing: 4)
+        let c = CustomCollectionView(scroll: .vertical, spacing: 4,
+                                     delegate: self,dataSource: self)
         c.register(FeedCell.self, forCellWithReuseIdentifier: "\(FeedCell.self)")
-        c.delegate   = self
-        c.dataSource = self
         
         return c
     }()
@@ -29,9 +29,11 @@ class FeedController: UIViewController {
         
         viewModel.reloadCallBack = {
             self.collection.reloadData()
+            
             self.showLoader(false)
         }
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -91,6 +93,12 @@ extension FeedController {
 //MARK: - UICollectionViewDelegate
 extension FeedController: UICollectionViewDelegate  {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(indexPath)
+        print(collection.cellForItem(at: indexPath))
+        print(collection.cellForItem(at: indexPath)?.frame)
+        print(collection.cellForItem(at: indexPath)?.frame.origin)
+        print(collection.cellForItem(at: indexPath)?.frame.width)
+        print(collection.cellForItem(at: indexPath)?.frame.height)
         let controller = TweetController(viewModel: TweetViewModel(tweet: viewModel.tweets[indexPath.row]))
         navigationController?.show(controller, sender: nil)
     }

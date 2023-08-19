@@ -32,7 +32,7 @@ class CustomLabel: UILabel {
         
         self.text = text
         
-        textAlignment = alignment
+        textAlignment      = alignment
         self.numberOfLines = numberOfLines
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been") }

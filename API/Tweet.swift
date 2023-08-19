@@ -19,10 +19,10 @@ struct Tweet {
     
     init(tweetID: String,dictionary: [String:Any]) {
         self.tweetID             = tweetID
-        self.text                = dictionary["text"]                as! String
+        self.text                = dictionary["text"]                as? String ?? ""
         self.likes               = dictionary["likes"]               as? Int        ?? 0
         self.retweets            = dictionary["retweets"]            as? Int        ?? 0
-        self.time                = dictionary["time"]                as! Timestamp
+        self.time                = dictionary["time"]                as? Timestamp ?? Timestamp(date: Date())
         self.ownerUID            = dictionary["ownerUid"]            as? String     ?? ""
         self.ownerUserName       = dictionary["ownerUserName"]       as? String     ?? ""
         self.ownerFullName       = dictionary["ownerFullName"]       as? String     ?? ""

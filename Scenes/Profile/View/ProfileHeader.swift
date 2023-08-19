@@ -6,7 +6,8 @@ import UIKit
 
 protocol ProfileHeaderDelegate: AnyObject {
     func header(_ wantsToDismissal: UICollectionReusableView)
-    func header(_ didActionUser: User)
+    func header(_ didActionUser  : User)
+    func header(_ didActionUser: ProfileHeader,options: ProfileFilterOptions)
 }
 
 class ProfileHeader: UICollectionReusableView {
@@ -15,9 +16,7 @@ class ProfileHeader: UICollectionReusableView {
     weak var delegate: ProfileHeaderDelegate?
 
     var viewModel: ProfileHeaderViewModel? {
-        didSet {
-            configure()
-        }
+        didSet { configure() }
     }
     
     private let bannerView: UIView = {
@@ -44,10 +43,11 @@ class ProfileHeader: UICollectionReusableView {
     }()
  
     private lazy var editProfileOrFollowButton: CustomButton = {
-        let b = CustomButton(title     : "Loading",
-                             titleColor: .twitterBlue,
-                             systemFont: UIFont.boldSystemFont(ofSize: 14),
-                             size      : 14)
+        let b =
+        CustomButton(title     : "Loading",
+                     titleColor: .twitterBlue,
+                     systemFont: UIFont.boldSystemFont(ofSize: 14),
+                     size      : 14)
         b.addTarget(self, action: #selector(tappedEditProfileOrFollowButton), for: .touchUpInside)
         return b
     }()
@@ -101,12 +101,6 @@ class ProfileHeader: UICollectionReusableView {
         let f = FilterView()
         f.delegate = self
         return f
-    }()
-    
-    private let underLineView: UIView = {
-        let v = UIView()
-        v.backgroundColor = .twitterBlue
-        return v
     }()
     
     //MARK: - Lifecycle
@@ -218,23 +212,15 @@ extension ProfileHeader {
                           paddingTop: 4,paddingLeft: 0,
                           paddingBottom: 0,paddingRight: 0)
         filterView.setHeight(50)
-        
-        addSubview(underLineView)
-        underLineView.anchor(left: leftAnchor,bottom: bottomAnchor)
-        
-        let count = CGFloat(ProfileFilterOptions.allCases.count)
-        underLineView.setDimensions(height: 2, width: frame.width / count)
     }
 }
 
 //MARK: - FilterViewDelegate
 extension ProfileHeader: FilterViewDelegate {
     func view(_ view: FilterView, didSelect indexPath: IndexPath) {
-        guard let cell = view.collection.cellForItem(at: indexPath) as? FilterCell else { return }
+        
+        guard let options = ProfileFilterOptions(rawValue: indexPath.item) else { return }
 
-        let xPosition = cell.frame.origin.x
-        UIView.animate(withDuration: 0.3) {
-            self.underLineView.frame.origin.x = xPosition
-        }
+        delegate?.header(self, options: options)
     }
 }

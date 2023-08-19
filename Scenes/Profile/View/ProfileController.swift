@@ -10,14 +10,14 @@ class ProfileController: UIViewController {
     var viewModel: ProfileViewModel
     
     private lazy var collection: CustomCollectionView = {
-        let c = CustomCollectionView(scroll: .vertical, spacing: 4)
+        let c = CustomCollectionView(scroll: .vertical, spacing: 4,
+                                     delegate: self, dataSource: self)
         c.layout.sectionInset.top = 4
         c.register(ProfileHeader.self,
                    forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                    withReuseIdentifier: "\(ProfileHeader.self)")
+        
         c.register(FeedCell.self, forCellWithReuseIdentifier: "\(FeedCell.self)")
-        c.delegate   = self
-        c.dataSource = self
         
         return c
     }()
@@ -34,7 +34,7 @@ class ProfileController: UIViewController {
         super.viewDidLoad()
         configureUI()
         
-        viewModel.callBack = { self.collection.reloadData() }
+        viewModel.successCallBack = { self.collection.reloadData() }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,12 +67,12 @@ extension ProfileController: UICollectionViewDelegate { }
 //MARK: - UICollectionViewDataSource
 extension ProfileController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.tweets.count
+        viewModel.currentDataSource.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collection.dequeueReusableCell(withReuseIdentifier: "\(FeedCell.self)", for: indexPath) as! FeedCell
-        cell.viewModel = FeedCellViewModel(items: viewModel.tweets[indexPath.row])
+        cell.viewModel = FeedCellViewModel(items: viewModel.currentDataSource[indexPath.row])
         
         return cell
     }
@@ -88,7 +88,8 @@ extension ProfileController: UICollectionViewDataSource {
 //MARK: - UICollectionViewDelegateFlowLayout
 extension ProfileController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let height = dynamicHeightCalculator(text: viewModel.tweets[indexPath.row].text, width: view.frame.width - 2)
+        let height = dynamicHeightCalculator(text: viewModel.currentDataSource[indexPath.row].text,
+                                             width: view.frame.width - 2)
         return CGSize(width: view.frame.width - 2, height: height + 96)
     }
     
@@ -99,6 +100,10 @@ extension ProfileController: UICollectionViewDelegateFlowLayout {
 
 //MARK: - ProfileHeaderDelegate
 extension ProfileController: ProfileHeaderDelegate {
+    func header(_ didActionUser: ProfileHeader, options: ProfileFilterOptions) {
+        viewModel.type = options
+    }
+  
     func header(_ wantsToDismissal: UICollectionReusableView) {
         navigationController?.popViewController(animated: true)
     }
@@ -124,7 +129,6 @@ extension ProfileController: ProfileHeaderDelegate {
             
             guard let user = AccountService.instance.currentUser else { return }
 
-            print(viewModel.user.uid)
             NotificationService.uploadNotification(notificationOwnerUid: viewModel.user.uid,
                                                    fromUser: user,
                                                    notificationtype: .follow)

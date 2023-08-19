@@ -10,9 +10,8 @@ class TweetController: UIViewController {
     var viewModel: TweetViewModel
     
     private lazy var collection: CustomCollectionView = {
-        let c = CustomCollectionView(scroll: .vertical, spacing: 4)
-        c.delegate   = self
-        c.dataSource = self
+        let c = CustomCollectionView(scroll: .vertical,spacing: 4,
+                                     delegate: self,dataSource: self)
         c.register(TweetHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "\(TweetHeader.self)")
         c.register(FeedCell.self, forCellWithReuseIdentifier: "\(FeedCell.self)")
         return c
